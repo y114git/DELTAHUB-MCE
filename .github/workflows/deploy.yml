@@ -17,10 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,7 +37,7 @@ jobs:
       - name: Build
         working-directory: ./DH-MCE
         env:
-          CLOUD_FUNCTIONS_BASE_URL: ${{ secrets.CLOUD_FUNCTIONS_BASE_URL }}
+          VITE_CLOUD_FUNCTIONS_BASE_URL: ${{ secrets.VITE_CLOUD_FUNCTIONS_BASE_URL }}
         run: npm run build
 
       - name: Setup Pages
@@ -51,6 +48,13 @@ jobs:
         with:
           path: "./DH-MCE/dist"
 
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
