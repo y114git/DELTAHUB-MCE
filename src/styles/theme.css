@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'MainFont';
+  src: url('./assets/main.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ChineseFont';
+  src: url('./assets/Dtm_x_FZBitmap Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,11 +19,19 @@
 }
 
 body {
-  font-family: 'Courier New', 'Consolas', monospace;
+  font-family: 'MainFont', 'Courier New', 'Consolas', monospace;
   background-color: #000000;
   color: #ffffff;
   line-height: 1.6;
   font-size: 14px;
+}
+
+/* Chinese language fonts */
+body[data-lang="zh_cn"],
+body[data-lang="zh_tw"],
+body[data-lang="zh_cn"] *,
+body[data-lang="zh_tw"] * {
+  font-family: 'ChineseFont', 'MainFont', 'Courier New', 'Consolas', monospace;
 }
 
 button {

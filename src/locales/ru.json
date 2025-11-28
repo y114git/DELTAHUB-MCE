@@ -80,8 +80,11 @@
   "tags": {
     "textedit_text": "Изм. Текста",
     "customization": "Кастомизация",
+    "customization_text": "Кастомизация",
     "gameplay": "Геймплей",
-    "other": "Другое"
+    "gameplay_text": "Геймплей",
+    "other": "Другое",
+    "other_text": "Другое"
   },
   "buttons": {
     "delete": "Удалить",

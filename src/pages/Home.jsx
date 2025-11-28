@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import iconIco from '../styles/assets/icon.ico';
 import './Home.css';
 
 export default function Home() {
@@ -8,7 +9,10 @@ export default function Home() {
 
   return (
     <div className="home container">
-      <h1>DELTAHUB Mod Creator/Editor</h1>
+      <div className="home-header">
+        <img src={iconIco} alt="DELTAHUB" className="home-icon" />
+        <h1>DELTAHUB Mod Creator/Editor</h1>
+      </div>
       <div className="home-actions">
         <div className="action-group">
           <h2>{t('ui.create_mod')}</h2>

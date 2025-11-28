@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
@@ -8,8 +9,28 @@ import EditPublicMod from './pages/EditPublicMod';
 import EditLocalMod from './pages/EditLocalMod';
 
 function App() {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    // Set data-lang attribute on body for font selection
+    document.body.setAttribute('data-lang', i18n.language);
+  }, [i18n.language]);
+
+  useEffect(() => {
+    // Update data-lang when language changes
+    const handleLanguageChanged = (lng) => {
+      document.body.setAttribute('data-lang', lng);
+    };
+
+    i18n.on('languageChanged', handleLanguageChanged);
+
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, [i18n]);
+
   return (
-    <BrowserRouter basename="/DH-MCE">
+    <BrowserRouter basename="/DELTAHUB-MCE">
       <LanguageSelector />
       <Routes>
         <Route path="/" element={<Home />} />

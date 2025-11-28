@@ -80,8 +80,11 @@
   "tags": {
     "textedit_text": "Text Edit",
     "customization": "Customization",
+    "customization_text": "Customization",
     "gameplay": "Gameplay",
-    "other": "Other"
+    "gameplay_text": "Gameplay",
+    "other": "Other",
+    "other_text": "Other"
   },
   "buttons": {
     "delete": "Delete",

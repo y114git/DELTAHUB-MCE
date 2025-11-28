@@ -80,8 +80,11 @@
   "tags": {
     "textedit_text": "文本编辑",
     "customization": "自定义",
+    "customization_text": "自定义",
     "gameplay": "游戏玩法",
-    "other": "其他"
+    "gameplay_text": "游戏玩法",
+    "other": "其他",
+    "other_text": "其他"
   },
   "buttons": {
     "delete": "删除",
