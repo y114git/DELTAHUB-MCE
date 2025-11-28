@@ -23,7 +23,12 @@ i18n
     lng: savedLanguage,
     fallbackLng: 'en',
     interpolation: {
-      escapeValue: false
+      escapeValue: false,
+      formatSeparator: ',',
+      format: function(value, format, lng) {
+        if (format === 'uppercase') return value.toUpperCase();
+        return value;
+      }
     }
   });
 

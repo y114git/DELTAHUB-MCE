@@ -9,7 +9,7 @@ import IconPreview from '../IconPreview/IconPreview';
 import ScreenshotManager from '../ScreenshotManager/ScreenshotManager';
 import './ModEditor.css';
 
-export default function ModEditor({ isCreating, isPublic, modData: initialModData, secretKey: initialSecretKey, onCancel }) {
+export default function ModEditor({ isCreating, isPublic, modData: initialModData, secretKey: initialSecretKey, initialIconFile, onCancel }) {
   const { t } = useTranslation();
   
   const [modData, setModData] = useState(initialModData || {
@@ -27,7 +27,7 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
     screenshots_url: []
   });
   
-  const [iconFile, setIconFile] = useState(null);
+  const [iconFile, setIconFile] = useState(initialIconFile || null);
   const [gameVersions, setGameVersions] = useState(['1.04']);
   const [secretKey, setSecretKey] = useState(initialSecretKey || '');
   const [errors, setErrors] = useState({});
@@ -130,7 +130,8 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
         
         const zipBlob = await exportZip(modData, files);
         downloadZip(zipBlob, `${modData.name || 'mod'}.zip`);
-        alert(t('dialogs.local_mod_created_message', { mod_name: modData.name }));
+        const messageKey = isCreating ? 'dialogs.local_mod_created_message' : 'dialogs.local_mod_updated_message';
+        alert(t(messageKey, { mod_name: modData.name }));
       }
       
       if (onCancel) onCancel();

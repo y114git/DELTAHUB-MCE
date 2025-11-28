@@ -12,12 +12,10 @@ function App() {
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    // Set data-lang attribute on body for font selection
     document.body.setAttribute('data-lang', i18n.language);
   }, [i18n.language]);
 
   useEffect(() => {
-    // Update data-lang when language changes
     const handleLanguageChanged = (lng) => {
       document.body.setAttribute('data-lang', lng);
     };

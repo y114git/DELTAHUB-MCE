@@ -2,6 +2,11 @@
   "ui": {
     "create_mod": "Crear Mod",
     "edit_mod": "Editar Mod",
+    "back": "Volver",
+    "select_mod_type": "Selecciona el tipo de mod:",
+    "select_mod_type_edit": "Selecciona el tipo de mod a editar:",
+    "view_guide": "Ver Guía del Modder",
+    "download_deltahub": "Descargar DELTAHUB (Recomendado)",
     "mod_type_label": "Juego:",
     "mod_name_label": "Nombre del mod:",
     "enter_mod_name": "Ingresa el nombre del mod",
@@ -51,7 +56,8 @@
     "deltarune": "DELTARUNE",
     "deltarunedemo": "DELTARUNE DEMO",
     "undertale": "UNDERTALE",
-    "undertaleyellow": "UNDERTALE Yellow"
+    "undertaleyellow": "UNDERTALE Yellow",
+    "import_mod": "Importar Mod"
   },
   "files": {
     "icon_label": "Icono",
@@ -63,9 +69,9 @@
     "path_to": "Ruta a",
     "archive_link": "Enlace de archivo",
     "extra_files": "Archivos adicionales",
-    "extra_files_title": "Archivos adicionales: {key_name}",
+    "extra_files_title": "Archivos adicionales: {{key_name}}",
     "version": "Versión",
-    "version_label": "Versión {file_type}:"
+    "version_label": "Versión {{file_type}}:"
   },
   "tabs": {
     "menu_root": "Menú/Raíz",
@@ -92,6 +98,8 @@
     "ok": "OK",
     "public": "Público",
     "local": "Local",
+    "mod_type_public": "Público",
+    "mod_type_local": "Local",
     "export": "Exportar",
     "import": "Importar"
   },
@@ -118,9 +126,9 @@
     "mod_submitted": "Mod enviado",
     "mod_creation_cancelled": "Creación de mod cancelada",
     "local_mod_created_title": "Mod local creado",
-    "local_mod_created_message": "¡Mod '{mod_name}' creado exitosamente!",
+    "local_mod_created_message": "¡Mod {{mod_name}} creado exitosamente!",
     "local_mod_updated_title": "Mod local actualizado",
-    "local_mod_updated_message": "¡Mod '{mod_name}' actualizado exitosamente!",
+    "local_mod_updated_message": "¡Mod {{mod_name}} actualizado exitosamente!",
     "save_mod_secret_key": "Guardar clave secreta del mod",
     "save_secret_key_instruction": "Ahora necesitas elegir una ubicación para guardar el archivo de clave secreta.\\nEsta clave será necesaria para editar el mod en el futuro.\\n\\nIMPORTANTE: ¡Guarda el archivo en un lugar seguro!",
     "request_sent_title": "Solicitud enviada",
@@ -147,6 +155,7 @@
     "url_error": "Error de URL",
     "validation_error": "(❌ error de validación)",
     "validation_data_error": "Error de validación de datos. Verifica que todos los campos sean correctos.",
+    "invalid_mod_format": "Formato de mod inválido.",
     "mod_submission_failed": "Error al enviar mod para revisión.\\nTipo de error: {error_type}",
     "update_error": "Error de actualización",
     "update_failed": "Error al actualizar: {error}",

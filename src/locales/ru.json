@@ -2,6 +2,11 @@
   "ui": {
     "create_mod": "Создать мод",
     "edit_mod": "Изменить мод",
+    "back": "Назад",
+    "select_mod_type": "Выберите тип мода:",
+    "select_mod_type_edit": "Выберите тип мода для редактирования:",
+    "view_guide": "Просмотреть руководство моддера",
+    "download_deltahub": "Скачать DELTAHUB (Рекомендовано)",
     "mod_type_label": "Игра:",
     "mod_name_label": "Название мода:",
     "enter_mod_name": "Введите название мода",
@@ -51,7 +56,8 @@
     "deltarune": "DELTARUNE",
     "deltarunedemo": "DELTARUNE ДЕМО",
     "undertale": "UNDERTALE",
-    "undertaleyellow": "UNDERTALE Yellow"
+    "undertaleyellow": "UNDERTALE Yellow",
+    "import_mod": "Импортировать мод"
   },
   "files": {
     "icon_label": "Иконка",
@@ -63,9 +69,9 @@
     "path_to": "Путь к",
     "archive_link": "Ссылка на архив",
     "extra_files": "Дополнительные файлы",
-    "extra_files_title": "Дополнительные файлы: {key_name}",
+    "extra_files_title": "Дополнительные файлы: {{key_name}}",
     "version": "Версия",
-    "version_label": "Версия {file_type}:"
+    "version_label": "Версия {{file_type}}:"
   },
   "tabs": {
     "menu_root": "Меню/Корн. папка",
@@ -92,6 +98,8 @@
     "ok": "ОК",
     "public": "Публично",
     "local": "Локально",
+    "mod_type_public": "Публичный",
+    "mod_type_local": "Локальный",
     "export": "Экспорт",
     "import": "Импорт"
   },
@@ -118,9 +126,9 @@
     "mod_submitted": "Мод отправлен",
     "mod_creation_cancelled": "Создание мода отменено",
     "local_mod_created_title": "Локальный мод создан",
-    "local_mod_created_message": "Мод '{mod_name}' успешно создан!",
+    "local_mod_created_message": "Мод {{mod_name}} успешно создан!",
     "local_mod_updated_title": "Локальный мод обновлен",
-    "local_mod_updated_message": "Мод '{mod_name}' успешно обновлен!",
+    "local_mod_updated_message": "Мод {{mod_name}} успешно обновлен!",
     "save_mod_secret_key": "Сохранить секретный ключ мода",
     "save_secret_key_instruction": "Теперь вам нужно выбрать место для сохранения файла с секретным ключом.\\nЭтот ключ потребуется для редактирования мода в будущем.\\n\\nВАЖНО: Сохраните файл в надёжном месте!",
     "request_sent_title": "Запрос отправлен",
@@ -147,6 +155,7 @@
     "url_error": "Ошибка URL",
     "validation_error": "(❌ ошибка проверки)",
     "validation_data_error": "Ошибка валидации данных. Проверьте корректность заполнения всех полей.",
+    "invalid_mod_format": "Неверный формат мода.",
     "mod_submission_failed": "Не удалось отправить мод на проверку.\\nТип ошибки: {error_type}",
     "update_error": "Ошибка обновления",
     "update_failed": "Ошибка обновления: {error}",

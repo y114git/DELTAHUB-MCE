@@ -31,7 +31,15 @@ export default function IconPreview({ url, file, isPublic, onError }) {
         if (result.valid) {
           setImageSrc(url);
         } else {
-          setError(result.error ? t(result.error) : t('errors.icon_invalid'));
+          if (result.error) {
+          if (result.errorParams) {
+            setError(t(result.error, result.errorParams));
+          } else {
+            setError(t(result.error));
+          }
+        } else {
+          setError(t('errors.icon_invalid'));
+        }
           if (onError) onError();
         }
       }).catch(() => {

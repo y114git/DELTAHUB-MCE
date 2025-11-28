@@ -2,6 +2,11 @@
   "ui": {
     "create_mod": "Create Mod",
     "edit_mod": "Edit Mod",
+    "back": "Back",
+    "select_mod_type": "Select mod type:",
+    "select_mod_type_edit": "Select mod type to edit:",
+    "view_guide": "View Modder's Guide",
+    "download_deltahub": "Download DELTAHUB (Recommended)",
     "mod_type_label": "Game:",
     "mod_name_label": "Mod name:",
     "enter_mod_name": "Enter mod name",
@@ -51,7 +56,8 @@
     "deltarune": "DELTARUNE",
     "deltarunedemo": "DELTARUNE DEMO",
     "undertale": "UNDERTALE",
-    "undertaleyellow": "UNDERTALE Yellow"
+    "undertaleyellow": "UNDERTALE Yellow",
+    "import_mod": "Import Mod"
   },
   "files": {
     "icon_label": "Icon",
@@ -63,9 +69,9 @@
     "path_to": "Path to",
     "archive_link": "Archive link",
     "extra_files": "Additional files",
-    "extra_files_title": "Extra Files: {key_name}",
+    "extra_files_title": "Extra Files: {{key_name}}",
     "version": "Version",
-    "version_label": "Version {file_type}:"
+    "version_label": "Version {{file_type}}:"
   },
   "tabs": {
     "menu_root": "Menu/Root",
@@ -92,6 +98,8 @@
     "ok": "OK",
     "public": "Public",
     "local": "Local",
+    "mod_type_public": "Public",
+    "mod_type_local": "Local",
     "export": "Export",
     "import": "Import"
   },
@@ -118,9 +126,9 @@
     "mod_submitted": "Mod submitted",
     "mod_creation_cancelled": "Mod creation cancelled",
     "local_mod_created_title": "Local mod created",
-    "local_mod_created_message": "Mod '{mod_name}' created successfully!",
+    "local_mod_created_message": "Mod {{mod_name}} created successfully!",
     "local_mod_updated_title": "Local mod updated",
-    "local_mod_updated_message": "Mod '{mod_name}' updated successfully!",
+    "local_mod_updated_message": "Mod {{mod_name}} updated successfully!",
     "save_mod_secret_key": "Save mod secret key",
     "save_secret_key_instruction": "Now you need to choose a location to save the secret key file.\\nThis key will be needed to edit the mod in the future.\\n\\nIMPORTANT: Save the file in a safe place!",
     "request_sent_title": "Request Sent",
@@ -147,6 +155,7 @@
     "url_error": "URL Error",
     "validation_error": "(❌ validation error)",
     "validation_data_error": "Data validation error. Check all fields are correct.",
+    "invalid_mod_format": "Invalid mod format.",
     "mod_submission_failed": "Failed to submit mod for review.\\nError type: {error_type}",
     "update_error": "Update Error",
     "update_failed": "Update failed: {error}",

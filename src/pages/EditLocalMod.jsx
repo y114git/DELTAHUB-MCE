@@ -10,6 +10,7 @@ export default function EditLocalMod() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [modData, setModData] = useState(null);
+  const [iconFile, setIconFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -19,9 +20,19 @@ export default function EditLocalMod() {
 
     setLoading(true);
     setError(null);
+    setIconFile(null);
 
     try {
       const result = await importZip(file);
+      
+      let extractedIconFile = null;
+      const iconEntry = result.files['icon.png'] || result.files['icon/icon.png'] || 
+                        Object.values(result.files).find(f => f.name === 'icon.png' || f.name.endsWith('/icon.png'));
+      if (iconEntry && !iconEntry.dir) {
+        const iconBlob = await iconEntry.async('blob');
+        extractedIconFile = new File([iconBlob], 'icon.png', { type: 'image/png' });
+        setIconFile(extractedIconFile);
+      }
       
       if (result.isDeltamod) {
         let deltamodInfoText = '';
@@ -71,6 +82,7 @@ export default function EditLocalMod() {
           isCreating={false}
           isPublic={false}
           modData={modData}
+          initialIconFile={iconFile}
           onCancel={() => navigate('/')}
         />
       </div>

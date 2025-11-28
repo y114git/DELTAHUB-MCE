@@ -1,6 +1,9 @@
 .home {
   padding: 40px 20px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 80px);
 }
 
 .home-header {
@@ -12,8 +15,8 @@
 }
 
 .home-icon {
-  width: 64px;
-  height: 64px;
+  width: 96px;
+  height: 96px;
   object-fit: contain;
 }
 
@@ -25,26 +28,77 @@
 
 .home-actions {
   display: flex;
-  gap: 40px;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  flex: 1;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
-.action-group {
+.action-button {
+  min-width: 250px;
+  padding: 16px 32px;
+  font-size: 18px;
+}
+
+.action-button.primary {
+  font-size: 20px;
+  padding: 20px 40px;
+}
+
+.action-button.back {
+  align-self: flex-start;
+  min-width: auto;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.type-selection {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  align-items: center;
+}
+
+.type-selection h2 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.type-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.type-buttons .action-button {
   min-width: 200px;
 }
 
-.action-group h2 {
-  font-size: 20px;
-  margin-bottom: 8px;
+.action-button.back {
+  align-self: center;
+  margin: 0 auto;
 }
 
-.action-group button {
-  width: 100%;
-  padding: 12px 24px;
-  font-size: 16px;
+.home-footer {
+  margin-top: auto;
+  padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.guide-link {
+  color: #888888;
+  text-decoration: underline;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.guide-link:hover {
+  color: #ffffff;
 }
 

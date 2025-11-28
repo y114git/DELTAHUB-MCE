@@ -2,6 +2,11 @@
   "ui": {
     "create_mod": "创建模组",
     "edit_mod": "编辑模组",
+    "back": "返回",
+    "select_mod_type": "选择模组类型：",
+    "select_mod_type_edit": "选择要编辑的模组类型：",
+    "view_guide": "查看模组制作指南",
+    "download_deltahub": "下载 DELTAHUB（推荐）",
     "mod_type_label": "游戏：",
     "mod_name_label": "模组名称：",
     "enter_mod_name": "输入模组名称",
@@ -51,7 +56,8 @@
     "deltarune": "DELTARUNE",
     "deltarunedemo": "DELTARUNE演示版",
     "undertale": "UNDERTALE",
-    "undertaleyellow": "UNDERTALE Yellow"
+    "undertaleyellow": "UNDERTALE Yellow",
+    "import_mod": "导入模组"
   },
   "files": {
     "icon_label": "图标",
@@ -63,9 +69,9 @@
     "path_to": "路径到",
     "archive_link": "存档链接",
     "extra_files": "额外文件",
-    "extra_files_title": "额外文件：{key_name}",
+    "extra_files_title": "额外文件：{{key_name}}",
     "version": "版本",
-    "version_label": "版本{file_type}："
+    "version_label": "版本{{file_type}}："
   },
   "tabs": {
     "menu_root": "菜单/根目录",
@@ -92,6 +98,8 @@
     "ok": "确定",
     "public": "公开",
     "local": "本地",
+    "mod_type_public": "公开",
+    "mod_type_local": "本地",
     "export": "导出",
     "import": "导入"
   },
@@ -118,9 +126,9 @@
     "mod_submitted": "模组已提交",
     "mod_creation_cancelled": "模组创建已取消",
     "local_mod_created_title": "本地模组已创建",
-    "local_mod_created_message": "模组'{mod_name}'创建成功！",
+    "local_mod_created_message": "模组{{mod_name}}创建成功！",
     "local_mod_updated_title": "本地模组已更新",
-    "local_mod_updated_message": "模组'{mod_name}'更新成功！",
+    "local_mod_updated_message": "模组{{mod_name}}更新成功！",
     "save_mod_secret_key": "保存模组密钥",
     "save_secret_key_instruction": "现在您需要选择保存密钥文件的位置。\\n此密钥将来需要用于编辑模组。\\n\\n重要：将文件保存在安全的地方！",
     "request_sent_title": "请求已发送",
@@ -147,6 +155,7 @@
     "url_error": "URL错误",
     "validation_error": "（❌ 验证错误）",
     "validation_data_error": "数据验证错误。请检查所有字段是否正确。",
+    "invalid_mod_format": "无效的模组格式。",
     "mod_submission_failed": "提交模组审核失败。\\n错误类型：{error_type}",
     "update_error": "更新错误",
     "update_failed": "更新失败：{error}",

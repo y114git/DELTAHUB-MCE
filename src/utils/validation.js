@@ -101,7 +101,7 @@ export async function validateImageURL(url) {
     }
     const contentLength = response.headers.get('content-length');
     if (contentLength && parseInt(contentLength) > 2 * 1024 * 1024) {
-      return { valid: false, error: 'errors.file_too_large', max_size: 2 };
+      return { valid: false, error: 'errors.file_too_large', errorParams: { max_size: 2 } };
     }
     return { valid: true };
   } catch {
