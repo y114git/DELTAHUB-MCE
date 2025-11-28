@@ -9,7 +9,7 @@ const CHAPTER_TABS = {
   undertaleyellow: ['undertaleyellow']
 };
 
-export default function FileManager({ modgame, files, isPublic, onChange }) {
+export default function FileManager({ modgame, files, isPublic, onChange, onFileChange }) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('0');
 
@@ -70,11 +70,15 @@ export default function FileManager({ modgame, files, isPublic, onChange }) {
     delete chapterFiles.data_file_version;
     const newFiles = { ...files, [activeTab]: chapterFiles };
     onChange(newFiles);
+    if (onFileChange) {
+      onFileChange(`${activeTab}:data_file`, null);
+    }
   };
 
   const removeExtraFile = (index) => {
     const chapterFiles = files[activeTab] || {};
     const extraFiles = [...(chapterFiles.extra_files || [])];
+    const removedExtra = extraFiles[index];
     extraFiles.splice(index, 1);
     const newFiles = {
       ...files,
@@ -84,6 +88,9 @@ export default function FileManager({ modgame, files, isPublic, onChange }) {
       }
     };
     onChange(newFiles);
+    if (onFileChange && removedExtra) {
+      onFileChange(`${activeTab}:extra:${removedExtra.key}`, null);
+    }
   };
 
   const chapterFiles = files[activeTab] || {};
@@ -111,7 +118,7 @@ export default function FileManager({ modgame, files, isPublic, onChange }) {
           <button onClick={addExtraFiles}>{t('ui.add_extra_files')}</button>
         </div>
 
-        {chapterFiles.data_file_url && (
+        {(chapterFiles.data_file_url !== undefined && chapterFiles.data_file_url !== null) && (
           <div className="frame file-frame">
             <h4>{t('files.data_file')}</h4>
             <div className="form-group">
@@ -123,15 +130,32 @@ export default function FileManager({ modgame, files, isPublic, onChange }) {
                   onChange={(e) => updateDataFile('data_file_url', e.target.value)}
                 />
               ) : (
-                <input
-                  type="file"
-                  accept=".win,.ios,.xdelta,.vcdiff,.csx"
-                  onChange={(e) => {
-                    if (e.target.files[0]) {
-                      updateDataFile('data_file_url', e.target.files[0].name);
-                    }
-                  }}
-                />
+                <div className="form-row">
+                  <input
+                    type="text"
+                    value={chapterFiles.data_file_url || ''}
+                    readOnly
+                    placeholder={t('ui.select_file')}
+                  />
+                  <input
+                    type="file"
+                    accept=".win,.ios,.xdelta,.vcdiff,.csx"
+                    onChange={(e) => {
+                      if (e.target.files[0]) {
+                        const file = e.target.files[0];
+                        updateDataFile('data_file_url', file.name);
+                        if (onFileChange) {
+                          onFileChange(`${activeTab}:data_file`, file);
+                        }
+                      }
+                    }}
+                    style={{ display: 'none' }}
+                    id={`data-file-input-${activeTab}`}
+                  />
+                  <button onClick={() => document.getElementById(`data-file-input-${activeTab}`).click()}>
+                    {t('ui.browse_button')}
+                  </button>
+                </div>
               )}
             </div>
             <div className="form-group">
@@ -170,24 +194,41 @@ export default function FileManager({ modgame, files, isPublic, onChange }) {
                   }}
                 />
               ) : (
-                <input
-                  type="file"
-                  accept=".zip,.rar,.7z"
-                  onChange={(e) => {
-                    if (e.target.files[0]) {
-                      const newExtraFiles = [...chapterFiles.extra_files];
-                      newExtraFiles[index] = { ...extra, url: e.target.files[0].name };
-                      const newFiles = {
-                        ...files,
-                        [activeTab]: {
-                          ...chapterFiles,
-                          extra_files: newExtraFiles
+                <div className="form-row">
+                  <input
+                    type="text"
+                    value={extra.url || ''}
+                    readOnly
+                    placeholder={t('ui.select_archive')}
+                  />
+                  <input
+                    type="file"
+                    accept=".zip,.rar,.7z"
+                    onChange={(e) => {
+                      if (e.target.files[0]) {
+                        const file = e.target.files[0];
+                        const newExtraFiles = [...chapterFiles.extra_files];
+                        newExtraFiles[index] = { ...extra, url: file.name };
+                        const newFiles = {
+                          ...files,
+                          [activeTab]: {
+                            ...chapterFiles,
+                            extra_files: newExtraFiles
+                          }
+                        };
+                        onChange(newFiles);
+                        if (onFileChange) {
+                          onFileChange(`${activeTab}:extra:${extra.key}`, file);
                         }
-                      };
-                      onChange(newFiles);
-                    }
-                  }}
-                />
+                      }
+                    }}
+                    style={{ display: 'none' }}
+                    id={`extra-file-input-${activeTab}-${index}`}
+                  />
+                  <button onClick={() => document.getElementById(`extra-file-input-${activeTab}-${index}`).click()}>
+                    {t('ui.browse_button')}
+                  </button>
+                </div>
               )}
             </div>
             <div className="form-group">

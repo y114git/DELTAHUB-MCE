@@ -9,9 +9,9 @@ import IconPreview from '../IconPreview/IconPreview';
 import ScreenshotManager from '../ScreenshotManager/ScreenshotManager';
 import './ModEditor.css';
 
-export default function ModEditor({ isCreating, isPublic, modData: initialModData, secretKey: initialSecretKey, initialIconFile, onCancel }) {
+export default function ModEditor({ isCreating, isPublic, modData: initialModData, secretKey: initialSecretKey, initialIconFile, initialFileObjects, onCancel }) {
   const { t } = useTranslation();
-  
+
   const [modData, setModData] = useState(initialModData || {
     name: '',
     author: '',
@@ -26,12 +26,13 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
     files: {},
     screenshots_url: []
   });
-  
+
   const [iconFile, setIconFile] = useState(initialIconFile || null);
   const [gameVersions, setGameVersions] = useState(['1.04']);
   const [secretKey, setSecretKey] = useState(initialSecretKey || '');
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
+  const [fileObjects, setFileObjects] = useState(initialFileObjects || new Map());
 
   useEffect(() => {
     if (isPublic) {
@@ -42,7 +43,7 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
               setGameVersions(data.supported_game_versions.sort().reverse());
             }
           })
-          .catch(() => {});
+          .catch(() => { });
       });
     }
   }, [isPublic]);
@@ -69,45 +70,57 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
 
   const validate = () => {
     const newErrors = {};
-    
+
     const nameValidation = validateModName(modData.name);
     if (!nameValidation.valid) newErrors.name = t(nameValidation.error);
-    
+
     const authorValidation = validateModAuthor(modData.author, isPublic);
     if (!authorValidation.valid) newErrors.author = t(authorValidation.error);
-    
+
     const versionValidation = validateVersion(modData.version);
     if (!versionValidation.valid) newErrors.version = t(versionValidation.error);
-    
+
     if (modData.external_url) {
       const urlValidation = validateExternalURL(modData.external_url);
       if (!urlValidation.valid) newErrors.external_url = t(urlValidation.error);
     }
-    
+
     if (isPublic && modData.description_url) {
       const descValidation = validateDescriptionURL(modData.description_url);
       if (!descValidation.valid) newErrors.description_url = t(descValidation.error);
     }
-    
+
     if (modData.icon_url) {
       const iconValidation = validateIconURL(modData.icon_url);
       if (!iconValidation.valid) newErrors.icon_url = t(iconValidation.error);
     }
-    
+
     const hasFiles = Object.keys(modData.files || {}).length > 0;
     if (!hasFiles) {
       newErrors.files = t('dialogs.mod_must_have_files');
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleFileChange = (key, file) => {
+    setFileObjects(prev => {
+      const newMap = new Map(prev);
+      if (file) {
+        newMap.set(key, file);
+      } else {
+        newMap.delete(key);
+      }
+      return newMap;
+    });
+  };
+
   const handleSave = async () => {
     if (!validate()) return;
-    
+
     setSaving(true);
-    
+
     try {
       if (isPublic) {
         let hashedKey = '';
@@ -123,17 +136,53 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
           alert(t('dialogs.request_sent_title'));
         }
       } else {
-        const files = {};
+        const filesToExport = {};
+
         if (iconFile) {
-          files['icon.png'] = iconFile;
+          filesToExport['icon.png'] = iconFile;
         }
-        
-        const zipBlob = await exportZip(modData, files);
+
+        const getChapterFolderName = (chapterKey) => {
+          if (chapterKey === '0') return 'chapter_0';
+          if (chapterKey === 'demo') return 'demo';
+          if (chapterKey === 'undertale') return 'undertale';
+          if (chapterKey === 'undertaleyellow') return 'undertaleyellow';
+          if (/^\d+$/.test(chapterKey)) return `chapter_${chapterKey}`;
+          return `chapter_${chapterKey}`;
+        };
+
+        for (const [chapterKey, chapterFiles] of Object.entries(modData.files || {})) {
+          const chapterFolder = getChapterFolderName(chapterKey);
+
+          if (chapterFiles.data_file_url && !chapterFiles.data_file_url.startsWith('http')) {
+            const fileKey = `${chapterKey}:data_file`;
+            const file = fileObjects.get(fileKey);
+            if (file) {
+              const fileName = chapterFiles.data_file_url.split('/').pop() || chapterFiles.data_file_url;
+              filesToExport[`${chapterFolder}/${fileName}`] = file;
+            }
+          }
+
+          if (chapterFiles.extra_files) {
+            for (const extra of chapterFiles.extra_files) {
+              if (extra.url && !extra.url.startsWith('http')) {
+                const fileKey = `${chapterKey}:extra:${extra.key}`;
+                const file = fileObjects.get(fileKey);
+                if (file) {
+                  const fileName = extra.url.split('/').pop() || extra.url;
+                  filesToExport[`${chapterFolder}/${fileName}`] = file;
+                }
+              }
+            }
+          }
+        }
+
+        const zipBlob = await exportZip(modData, filesToExport);
         downloadZip(zipBlob, `${modData.name || 'mod'}.zip`);
         const messageKey = isCreating ? 'dialogs.local_mod_created_message' : 'dialogs.local_mod_updated_message';
         alert(t(messageKey, { mod_name: modData.name }));
       }
-      
+
       if (onCancel) onCancel();
     } catch (error) {
       alert(t('errors.error') + ': ' + error.message);
@@ -145,7 +194,7 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
   return (
     <div className="mod-editor">
       <h1>{isCreating ? t('ui.create_mod') : t('ui.edit_mod')}</h1>
-      
+
       <div className="frame">
         <div className="form-group">
           <label>{t('ui.mod_type_label')}</label>
@@ -320,6 +369,7 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
             files={modData.files}
             isPublic={isPublic}
             onChange={(files) => updateField('files', files)}
+            onFileChange={!isPublic ? handleFileChange : undefined}
           />
           {errors.files && <div className="error">{errors.files}</div>}
         </div>

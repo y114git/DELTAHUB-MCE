@@ -11,6 +11,7 @@ export default function EditLocalMod() {
   const { t } = useTranslation();
   const [modData, setModData] = useState(null);
   const [iconFile, setIconFile] = useState(null);
+  const [initialFileObjects, setInitialFileObjects] = useState(new Map());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -24,16 +25,16 @@ export default function EditLocalMod() {
 
     try {
       const result = await importZip(file);
-      
+
       let extractedIconFile = null;
-      const iconEntry = result.files['icon.png'] || result.files['icon/icon.png'] || 
-                        Object.values(result.files).find(f => f.name === 'icon.png' || f.name.endsWith('/icon.png'));
+      const iconEntry = result.files['icon.png'] || result.files['icon/icon.png'] ||
+        Object.values(result.files).find(f => f.name === 'icon.png' || f.name.endsWith('/icon.png'));
       if (iconEntry && !iconEntry.dir) {
         const iconBlob = await iconEntry.async('blob');
         extractedIconFile = new File([iconBlob], 'icon.png', { type: 'image/png' });
         setIconFile(extractedIconFile);
       }
-      
+
       if (result.isDeltamod) {
         let deltamodInfoText = '';
         for (const path of ['deltamodInfo.json', '_deltamodInfo.json', 'meta.json']) {
@@ -44,27 +45,121 @@ export default function EditLocalMod() {
           }
         }
         const deltamodInfo = JSON.parse(deltamodInfoText || '{}');
-        
+
         let moddingXmlText = '';
         const xmlEntry = result.files['modding.xml'] || Object.values(result.files).find(f => f.name === 'modding.xml');
         if (xmlEntry && !xmlEntry.dir) {
           moddingXmlText = await xmlEntry.async('string');
         }
-        
+
         const parser = new DOMParser();
         const moddingXml = parser.parseFromString(moddingXmlText, 'text/xml');
-        
+
         const files = {};
         for (const [path, entry] of Object.entries(result.files)) {
           if (!entry.dir) {
             files[path] = await entry.async('blob');
           }
         }
-        
+
         const converted = convertDeltamodToDELTAHUB(deltamodInfo, moddingXml, files);
         setModData(converted);
+
+        const fileObjectsMap = new Map();
+        for (const [chapterKey, chapterFiles] of Object.entries(converted.files || {})) {
+          if (chapterFiles.data_file_url && files[chapterFiles.data_file_url]) {
+            const blob = files[chapterFiles.data_file_url];
+            const file = new File([blob], chapterFiles.data_file_url.split('/').pop() || chapterFiles.data_file_url, { type: blob.type });
+            fileObjectsMap.set(`${chapterKey}:data_file`, file);
+          }
+          if (chapterFiles.extra_files) {
+            for (const extra of chapterFiles.extra_files) {
+              if (extra.url && files[extra.url]) {
+                const blob = files[extra.url];
+                const file = new File([blob], extra.url.split('/').pop() || extra.url, { type: blob.type });
+                fileObjectsMap.set(`${chapterKey}:extra:${extra.key}`, file);
+              }
+            }
+          }
+        }
+        setInitialFileObjects(fileObjectsMap);
       } else if (result.modConfig) {
         setModData(result.modConfig);
+
+        const getChapterFolderName = (chapterKey) => {
+          if (chapterKey === '0') return 'chapter_0';
+          if (chapterKey === 'demo') return 'demo';
+          if (chapterKey === 'undertale') return 'undertale';
+          if (chapterKey === 'undertaleyellow') return 'undertaleyellow';
+          if (/^\d+$/.test(chapterKey)) return `chapter_${chapterKey}`;
+          return `chapter_${chapterKey}`;
+        };
+
+        const fileObjectsMap = new Map();
+        for (const [chapterKey, chapterFiles] of Object.entries(result.modConfig.files || {})) {
+          const chapterFolder = getChapterFolderName(chapterKey);
+
+          if (chapterFiles.data_file_url && !chapterFiles.data_file_url.startsWith('http')) {
+            const fileName = chapterFiles.data_file_url.split('/').pop() || chapterFiles.data_file_url;
+            const pathsToTry = [
+              `${chapterFolder}/${fileName}`,
+              chapterFiles.data_file_url,
+              fileName
+            ];
+
+            let entry = null;
+            for (const path of pathsToTry) {
+              entry = result.files[path];
+              if (entry && !entry.dir) break;
+            }
+
+            if (!entry) {
+              entry = Object.values(result.files).find(f =>
+                !f.dir && (f.name === fileName || f.name.endsWith('/' + fileName))
+              );
+            }
+
+            if (entry && !entry.dir) {
+              const blob = await entry.async('blob');
+              const file = new File([blob], fileName, { type: blob.type });
+              fileObjectsMap.set(`${chapterKey}:data_file`, file);
+              chapterFiles.data_file_url = fileName;
+            }
+          }
+
+          if (chapterFiles.extra_files) {
+            for (const extra of chapterFiles.extra_files) {
+              if (extra.url && !extra.url.startsWith('http')) {
+                const fileName = extra.url.split('/').pop() || extra.url;
+                const pathsToTry = [
+                  `${chapterFolder}/${fileName}`,
+                  extra.url,
+                  fileName
+                ];
+
+                let entry = null;
+                for (const path of pathsToTry) {
+                  entry = result.files[path];
+                  if (entry && !entry.dir) break;
+                }
+
+                if (!entry) {
+                  entry = Object.values(result.files).find(f =>
+                    !f.dir && (f.name === fileName || f.name.endsWith('/' + fileName))
+                  );
+                }
+
+                if (entry && !entry.dir) {
+                  const blob = await entry.async('blob');
+                  const file = new File([blob], fileName, { type: blob.type });
+                  fileObjectsMap.set(`${chapterKey}:extra:${extra.key}`, file);
+                  extra.url = fileName;
+                }
+              }
+            }
+          }
+        }
+        setInitialFileObjects(fileObjectsMap);
       } else {
         throw new Error(t('errors.invalid_mod_format'));
       }
@@ -83,6 +178,7 @@ export default function EditLocalMod() {
           isPublic={false}
           modData={modData}
           initialIconFile={iconFile}
+          initialFileObjects={initialFileObjects}
           onCancel={() => navigate('/')}
         />
       </div>
