@@ -1,6 +1,6 @@
 # DELTAHUB Mod Creator/Editor
 
-Web-based mod creator and editor for DELTARUNE/UNDERTALE mods. Create and edit mods without installing DELTAHUB.
+Web-based mod creator and editor for DELTAHUB format mods. Create and edit mods without installing DELTAHUB.
 
 ## Features
 
