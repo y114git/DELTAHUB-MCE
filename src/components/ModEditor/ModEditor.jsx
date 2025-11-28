@@ -35,6 +35,10 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
   const [fileObjects, setFileObjects] = useState(initialFileObjects || new Map());
 
   useEffect(() => {
+    setIconFile(initialIconFile || null);
+  }, [initialIconFile]);
+
+  useEffect(() => {
     if (isPublic) {
       import('../../utils/api').then(({ getGlobalSettings }) => {
         getGlobalSettings()
@@ -285,7 +289,7 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
               </>
             )}
             <IconPreview
-              url={modData.icon_url}
+              url={!iconFile ? modData.icon_url : ''}
               file={iconFile}
               isPublic={isPublic}
             />
