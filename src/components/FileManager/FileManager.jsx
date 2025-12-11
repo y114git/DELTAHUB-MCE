@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './FileManager.css';
 
@@ -6,20 +6,30 @@ const CHAPTER_TABS = {
   deltarune: ['0', '1', '2', '3', '4'],
   deltarunedemo: ['demo'],
   undertale: ['undertale'],
-  undertaleyellow: ['undertaleyellow']
+  undertaleyellow: ['undertaleyellow'],
+  pizzatower: ['pizzatower']
 };
 
 export default function FileManager({ modgame, files, isPublic, onChange, onFileChange }) {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('0');
-
   const tabs = CHAPTER_TABS[modgame] || CHAPTER_TABS.deltarune;
+  const defaultTab = tabs[0] || '0';
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  useEffect(() => {
+    const newTabs = CHAPTER_TABS[modgame] || CHAPTER_TABS.deltarune;
+    const newDefaultTab = newTabs[0] || '0';
+    if (!newTabs.includes(activeTab)) {
+      setActiveTab(newDefaultTab);
+    }
+  }, [modgame, activeTab]);
 
   const getTabLabel = (tab) => {
     if (tab === '0') return t('tabs.menu_root');
     if (tab === 'demo') return t('tabs.demo');
     if (tab === 'undertale') return t('tabs.undertale');
     if (tab === 'undertaleyellow') return t('tabs.undertaleyellow');
+    if (tab === 'pizzatower') return t('tabs.pizzatower');
     return t('tabs.chapter_' + tab);
   };
 

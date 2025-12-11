@@ -151,6 +151,7 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
           if (chapterKey === 'demo') return 'demo';
           if (chapterKey === 'undertale') return 'undertale';
           if (chapterKey === 'undertaleyellow') return 'undertaleyellow';
+          if (chapterKey === 'pizzatower') return 'pizzatower';
           if (/^\d+$/.test(chapterKey)) return `chapter_${chapterKey}`;
           return `chapter_${chapterKey}`;
         };
@@ -210,6 +211,7 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
             <option value="deltarunedemo">{t('ui.deltarunedemo')}</option>
             <option value="undertale">{t('ui.undertale')}</option>
             <option value="undertaleyellow">{t('ui.undertaleyellow')}</option>
+            <option value="pizzatower">{t('ui.pizzatower')}</option>
           </select>
         </div>
 

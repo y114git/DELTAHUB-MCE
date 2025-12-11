@@ -57,6 +57,7 @@
     "deltarunedemo": "DELTARUNE DEMO",
     "undertale": "UNDERTALE",
     "undertaleyellow": "UNDERTALE Yellow",
+    "pizzatower": "Pizza Tower",
     "import_mod": "Import Mod"
   },
   "files": {
@@ -81,7 +82,8 @@
     "chapter_4": "Chapter 4",
     "demo": "Demo",
     "undertale": "Undertale",
-    "undertaleyellow": "UNDERTALE Yellow"
+    "undertaleyellow": "UNDERTALE Yellow",
+    "pizzatower": "Pizza Tower"
   },
   "tags": {
     "textedit_text": "Text Edit",

@@ -57,6 +57,7 @@
     "deltarunedemo": "DELTARUNE演示版",
     "undertale": "UNDERTALE",
     "undertaleyellow": "UNDERTALE Yellow",
+    "pizzatower": "Pizza Tower",
     "import_mod": "导入模组"
   },
   "files": {
@@ -81,7 +82,8 @@
     "chapter_4": "第4章",
     "demo": "演示",
     "undertale": "Undertale",
-    "undertaleyellow": "UNDERTALE Yellow"
+    "undertaleyellow": "UNDERTALE Yellow",
+    "pizzatower": "Pizza Tower"
   },
   "tags": {
     "textedit_text": "文本编辑",

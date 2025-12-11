@@ -91,6 +91,7 @@ export default function EditLocalMod() {
           if (chapterKey === 'demo') return 'demo';
           if (chapterKey === 'undertale') return 'undertale';
           if (chapterKey === 'undertaleyellow') return 'undertaleyellow';
+          if (chapterKey === 'pizzatower') return 'pizzatower';
           if (/^\d+$/.test(chapterKey)) return `chapter_${chapterKey}`;
           return `chapter_${chapterKey}`;
         };
