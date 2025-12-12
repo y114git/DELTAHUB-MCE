@@ -21,7 +21,7 @@ export function convertDeltamodToDELTAHUB(deltamodInfo, moddingXml, files) {
   
   const config = {
     is_local_mod: true,
-    mod_key: modKey,
+    key: modKey,
     created_date: createdDate,
     is_available_on_server: false,
     name: meta.name || 'Local Mod',
@@ -30,7 +30,7 @@ export function convertDeltamodToDELTAHUB(deltamodInfo, moddingXml, files) {
     tagline: meta.description || 'No description',
     external_url: meta.url || '',
     game_version: deltamodInfo.deltaruneTargetVersion || 'Not specified',
-    modgame: meta.demoMod ? 'deltarunedemo' : 'deltarune',
+    game: meta.demoMod ? 'deltarunedemo' : 'deltarune',
     files: generateFilesStructure(moddingXml, files),
     tags: meta.tags || []
   };

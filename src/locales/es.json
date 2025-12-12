@@ -146,7 +146,7 @@
   "errors": {
     "error": "Error",
     "mod_creation_failed": "Error al crear mod: {error}",
-    "mod_key_not_determined": "No se pudo determinar la clave del mod.",
+    "key_not_determined": "No se pudo determinar la clave del mod.",
     "icon_invalid": "URL del icono inválida.",
     "description_md_txt_required": "La descripción completa debe ser un enlace directo a un archivo .md o .txt.",
     "not_a_file_response": "La URL no devuelve un archivo.",

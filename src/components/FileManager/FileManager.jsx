@@ -10,19 +10,20 @@ const CHAPTER_TABS = {
   pizzatower: ['pizzatower']
 };
 
-export default function FileManager({ modgame, files, isPublic, onChange, onFileChange }) {
+export default function FileManager({ game, modgame, files, isPublic, onChange, onFileChange }) {
   const { t } = useTranslation();
-  const tabs = CHAPTER_TABS[modgame] || CHAPTER_TABS.deltarune;
+  const gameValue = game || modgame;
+  const tabs = CHAPTER_TABS[gameValue] || CHAPTER_TABS.deltarune;
   const defaultTab = tabs[0] || '0';
   const [activeTab, setActiveTab] = useState(defaultTab);
 
   useEffect(() => {
-    const newTabs = CHAPTER_TABS[modgame] || CHAPTER_TABS.deltarune;
+    const newTabs = CHAPTER_TABS[gameValue] || CHAPTER_TABS.deltarune;
     const newDefaultTab = newTabs[0] || '0';
     if (!newTabs.includes(activeTab)) {
       setActiveTab(newDefaultTab);
     }
-  }, [modgame, activeTab]);
+  }, [gameValue, activeTab]);
 
   const getTabLabel = (tab) => {
     if (tab === '0') return t('tabs.menu_root');

@@ -87,11 +87,17 @@ export default function EditLocalMod() {
         setModData(result.modConfig);
 
         const getChapterFolderName = (chapterKey) => {
-          if (chapterKey === '0') return 'chapter_0';
           if (chapterKey === 'demo') return 'demo';
           if (chapterKey === 'undertale') return 'undertale';
           if (chapterKey === 'undertaleyellow') return 'undertaleyellow';
           if (chapterKey === 'pizzatower') return 'pizzatower';
+          if (chapterKey === '0') {
+            const game = result.modConfig?.game || result.modConfig?.game || 'deltarune';
+            if (game === 'pizzatower' || game === 'pizzaoven') {
+              return 'pizzatower';
+            }
+            return 'chapter_0';
+          }
           if (/^\d+$/.test(chapterKey)) return `chapter_${chapterKey}`;
           return `chapter_${chapterKey}`;
         };

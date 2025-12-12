@@ -146,7 +146,7 @@
   "errors": {
     "error": "Ошибка",
     "mod_creation_failed": "Не удалось создать мод: {error}",
-    "mod_key_not_determined": "Не удалось определить ключ мода.",
+    "key_not_determined": "Не удалось определить ключ мода.",
     "icon_invalid": "URL иконки недействителен.",
     "description_md_txt_required": "Полное описание должно быть прямой ссылкой на .md или .txt файл.",
     "not_a_file_response": "URL не возвращает файл.",

@@ -146,7 +146,7 @@
   "errors": {
     "error": "錯誤",
     "mod_creation_failed": "創建模組失敗：{error}",
-    "mod_key_not_determined": "無法確定模組密鑰。",
+    "key_not_determined": "無法確定模組密鑰。",
     "icon_invalid": "圖示URL無效。",
     "description_md_txt_required": "完整描述必須是.md或.txt檔案的直接連結。",
     "not_a_file_response": "URL不返回檔案。",

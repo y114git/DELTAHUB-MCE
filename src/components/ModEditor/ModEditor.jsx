@@ -21,7 +21,7 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
     description_url: '',
     version: '1.0.0',
     game_version: '1.04',
-    modgame: 'deltarune',
+    game: 'deltarune',
     tags: [],
     files: {},
     screenshots_url: []
@@ -147,11 +147,17 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
         }
 
         const getChapterFolderName = (chapterKey) => {
-          if (chapterKey === '0') return 'chapter_0';
           if (chapterKey === 'demo') return 'demo';
           if (chapterKey === 'undertale') return 'undertale';
           if (chapterKey === 'undertaleyellow') return 'undertaleyellow';
           if (chapterKey === 'pizzatower') return 'pizzatower';
+          if (chapterKey === '0') {
+            const game = modData?.game || modData?.game || 'deltarune';
+            if (game === 'pizzatower' || game === 'pizzaoven') {
+              return 'pizzatower';
+            }
+            return 'chapter_0';
+          }
           if (/^\d+$/.test(chapterKey)) return `chapter_${chapterKey}`;
           return `chapter_${chapterKey}`;
         };
@@ -204,8 +210,8 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
         <div className="form-group">
           <label>{t('ui.mod_type_label')}</label>
           <select
-            value={modData.modgame}
-            onChange={(e) => updateField('modgame', e.target.value)}
+            value={modData.game || modData.modgame}
+            onChange={(e) => updateField('game', e.target.value)}
           >
             <option value="deltarune">{t('ui.deltarune')}</option>
             <option value="deltarunedemo">{t('ui.deltarunedemo')}</option>
@@ -371,7 +377,7 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
 
         <div className="form-group">
           <FileManager
-            modgame={modData.modgame}
+            game={modData.game || modData.modgame}
             files={modData.files}
             isPublic={isPublic}
             onChange={(files) => updateField('files', files)}
