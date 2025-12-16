@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { importZip } from '../utils/zipHandler';
-import { convertDeltamodToDELTAHUB } from '../utils/modConverter';
+import { convertDeltamodToDELTAHUB, extractFileMapping } from '../utils/modConverter';
 import ModEditor from '../components/ModEditor/ModEditor';
-import JSZip from 'jszip';
 
 export default function EditLocalMod() {
   const navigate = useNavigate();
@@ -62,22 +61,34 @@ export default function EditLocalMod() {
           }
         }
 
-        const converted = convertDeltamodToDELTAHUB(deltamodInfo, moddingXml, files);
+        const converted = convertDeltamodToDELTAHUB(deltamodInfo, moddingXml);
         setModData(converted);
 
+        const fileMapping = extractFileMapping(converted, files);
         const fileObjectsMap = new Map();
+        
         for (const [chapterKey, chapterFiles] of Object.entries(converted.files || {})) {
-          if (chapterFiles.data_file_url && files[chapterFiles.data_file_url]) {
-            const blob = files[chapterFiles.data_file_url];
-            const file = new File([blob], chapterFiles.data_file_url.split('/').pop() || chapterFiles.data_file_url, { type: blob.type });
-            fileObjectsMap.set(`${chapterKey}:data_file`, file);
+          if (chapterFiles.data_file_url) {
+            const sourceKey = `${chapterKey}:data_file`;
+            const sourcePath = fileMapping.get(sourceKey);
+            if (sourcePath && files[sourcePath]) {
+              const blob = files[sourcePath];
+              const fileName = chapterFiles.data_file_url.split('/').pop() || chapterFiles.data_file_url;
+              const file = new File([blob], fileName, { type: blob.type });
+              fileObjectsMap.set(sourceKey, file);
+            }
           }
-          if (chapterFiles.extra_files) {
+          
+          if (chapterFiles.extra_files && Array.isArray(chapterFiles.extra_files)) {
             for (const extra of chapterFiles.extra_files) {
-              if (extra.url && files[extra.url]) {
-                const blob = files[extra.url];
-                const file = new File([blob], extra.url.split('/').pop() || extra.url, { type: blob.type });
-                fileObjectsMap.set(`${chapterKey}:extra:${extra.key}`, file);
+              const fileKey = `${chapterKey}:extra:${extra.key}`;
+              const sourcePath = fileMapping.get(fileKey) || extra._sourceFile;
+              
+              if (sourcePath && files[sourcePath]) {
+                const blob = files[sourcePath];
+                const fileName = sourcePath.split('/').pop() || extra.key;
+                const file = new File([blob], fileName, { type: blob.type });
+                fileObjectsMap.set(fileKey, file);
               }
             }
           }
@@ -92,7 +103,7 @@ export default function EditLocalMod() {
           if (chapterKey === 'undertaleyellow') return 'undertaleyellow';
           if (chapterKey === 'pizzatower') return 'pizzatower';
           if (chapterKey === '0') {
-            const game = result.modConfig?.game || result.modConfig?.game || 'deltarune';
+            const game = result.modConfig?.game || 'deltarune';
             if (game === 'pizzatower' || game === 'pizzaoven') {
               return 'pizzatower';
             }
@@ -213,4 +224,3 @@ export default function EditLocalMod() {
     </div>
   );
 }
-

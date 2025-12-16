@@ -27,10 +27,33 @@ export async function importZip(file) {
   };
 }
 
+function cleanModDataForExport(modData) {
+  const cleaned = { ...modData };
+  
+  if (cleaned.files) {
+    cleaned.files = {};
+    for (const [chapterKey, chapterFiles] of Object.entries(modData.files)) {
+      cleaned.files[chapterKey] = { ...chapterFiles };
+      
+      if (chapterFiles.extra_files && Array.isArray(chapterFiles.extra_files)) {
+        cleaned.files[chapterKey].extra_files = chapterFiles.extra_files.map(extra => {
+          const cleanedExtra = { ...extra };
+          delete cleanedExtra._sourceFile;
+          delete cleanedExtra._targetPath;
+          return cleanedExtra;
+        });
+      }
+    }
+  }
+  
+  return cleaned;
+}
+
 export async function exportZip(modData, files) {
   const zip = new JSZip();
   
-  zip.file('mod_config.json', JSON.stringify(modData, null, 2));
+  const cleanedModData = cleanModDataForExport(modData);
+  zip.file('mod_config.json', JSON.stringify(cleanedModData, null, 2));
   
   for (const [path, fileData] of Object.entries(files)) {
     if (fileData instanceof File) {
@@ -56,4 +79,3 @@ export function downloadZip(blob, filename) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-

@@ -15,10 +15,3 @@ export async function hashSecretKey(secretKey) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-export async function possibleSecretHashes(secretKey) {
-  const hashes = [];
-  const current = await hashSecretKey(secretKey);
-  hashes.push(current);
-  return hashes;
-}
-
