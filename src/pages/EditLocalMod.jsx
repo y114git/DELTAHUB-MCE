@@ -52,7 +52,18 @@ export default function EditLocalMod() {
         }
 
         const parser = new DOMParser();
-        const moddingXml = parser.parseFromString(moddingXmlText, 'text/xml');
+        let moddingXml = parser.parseFromString(moddingXmlText.trim(), 'text/xml');
+        
+        if (moddingXml.querySelector('parsererror')) {
+          let wrappedContent = moddingXmlText.trim();
+          if (!wrappedContent.startsWith('<?xml')) {
+            wrappedContent = `<?xml version="1.0" encoding="UTF-8"?>\n<patches>\n${wrappedContent}\n</patches>`;
+          } else {
+            const lines = wrappedContent.split('\n');
+            wrappedContent = lines[0] + '\n<patches>\n' + lines.slice(1).join('\n') + '\n</patches>';
+          }
+          moddingXml = parser.parseFromString(wrappedContent, 'text/xml');
+        }
 
         const files = {};
         for (const [path, entry] of Object.entries(result.files)) {
