@@ -16,11 +16,7 @@ export function validateVersion(version) {
   if (!version || version.trim().length === 0) {
     return { valid: false, error: 'Version is required' };
   }
-  const versionRegex = /^\d+\.\d+\.\d+$/;
-  if (!versionRegex.test(version)) {
-    return { valid: false, error: 'Version must be in format X.X.X' };
-  }
-  if (version.length > 10) {
+  if (version.length > 50) {
     return { valid: false, error: 'dialogs.mod_version_too_long' };
   }
   return { valid: true };
