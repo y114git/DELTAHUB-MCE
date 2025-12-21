@@ -58,6 +58,9 @@ export async function exportZip(modData, files) {
   for (const [path, fileData] of Object.entries(files)) {
     if (fileData instanceof File) {
       zip.file(path, fileData);
+    } else if (fileData instanceof Blob) {
+      const arrayBuffer = await fileData.arrayBuffer();
+      zip.file(path, arrayBuffer);
     } else if (fileData instanceof ArrayBuffer || fileData instanceof Uint8Array) {
       zip.file(path, fileData);
     } else if (typeof fileData === 'string') {

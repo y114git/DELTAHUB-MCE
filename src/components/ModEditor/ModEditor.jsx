@@ -7,6 +7,7 @@ import { validateModName, validateModAuthor, validateVersion, validateExternalUR
 import FileManager from '../FileManager/FileManager';
 import IconPreview from '../IconPreview/IconPreview';
 import ScreenshotManager from '../ScreenshotManager/ScreenshotManager';
+import JSZip from 'jszip';
 import './ModEditor.css';
 
 export default function ModEditor({ isCreating, isPublic, modData: initialModData, secretKey: initialSecretKey, initialIconFile, initialFileObjects, onCancel }) {
@@ -162,6 +163,8 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
           return `chapter_${chapterKey}`;
         };
 
+        const modDataForExport = JSON.parse(JSON.stringify(modData));
+
         for (const [chapterKey, chapterFiles] of Object.entries(modData.files || {})) {
           const chapterFolder = getChapterFolderName(chapterKey);
 
@@ -175,20 +178,55 @@ export default function ModEditor({ isCreating, isPublic, modData: initialModDat
           }
 
           if (chapterFiles.extra_files) {
-            for (const extra of chapterFiles.extra_files) {
+            const chapterFilesForExport = modDataForExport.files[chapterKey];
+            for (let i = 0; i < chapterFiles.extra_files.length; i++) {
+              const extra = chapterFiles.extra_files[i];
               if (extra.url && !extra.url.startsWith('http')) {
                 const fileKey = `${chapterKey}:extra:${extra.key}`;
                 const file = fileObjects.get(fileKey);
                 if (file) {
-                  const fileName = extra.url.split('/').pop() || extra.url;
-                  filesToExport[`${chapterFolder}/${fileName}`] = file;
+                  let archiveName = extra.url;
+                  if (!archiveName.endsWith('.zip')) {
+                    const archiveKey = extra.key || file.name.replace(/\./g, '_');
+                    archiveName = `extra_file_${archiveKey}.zip`;
+                  }
+
+                  if (chapterFilesForExport.extra_files && chapterFilesForExport.extra_files[i]) {
+                    chapterFilesForExport.extra_files[i].url = archiveName;
+                  }
+
+                  const isZipFile = file.name.toLowerCase().endsWith('.zip') ||
+                    file.type === 'application/zip' ||
+                    file.type === 'application/x-zip-compressed';
+
+                  let extraZipBlob;
+
+                  if (isZipFile && !extra._targetPath) {
+                    extraZipBlob = await file.arrayBuffer();
+                  } else {
+                    let targetPath = '';
+                    if (extra._targetPath) {
+                      targetPath = extra._targetPath;
+                    } else {
+                      const baseFileName = file.name.endsWith('.zip') ? file.name.slice(0, -4) : file.name;
+                      targetPath = baseFileName;
+                    }
+
+                    const extraZip = new JSZip();
+                    const fileData = await file.arrayBuffer();
+                    extraZip.file(targetPath, fileData);
+
+                    extraZipBlob = await extraZip.generateAsync({ type: 'blob' });
+                  }
+
+                  filesToExport[`${chapterFolder}/${archiveName}`] = extraZipBlob;
                 }
               }
             }
           }
         }
 
-        const zipBlob = await exportZip(modData, filesToExport);
+        const zipBlob = await exportZip(modDataForExport, filesToExport);
         downloadZip(zipBlob, `${modData.name || 'mod'}.zip`);
         const messageKey = isCreating ? 'dialogs.local_mod_created_message' : 'dialogs.local_mod_updated_message';
         alert(t(messageKey, { mod_name: modData.name }));
