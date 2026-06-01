@@ -6,6 +6,7 @@ import {
   MOD_ALLOWED_TAGS,
   MOD_FIELD_LIMITS,
   createEmptyModConfig,
+  normalizeInfoFiles,
   normalizeModConfigData,
   normalizeStoredPath,
   parseExtraFilesRaw,
@@ -36,6 +37,7 @@ function createInitialState(initialConfig, initialAssets) {
   const config = normalizeModConfigData(initialConfig || createEmptyModConfig('deltarune'));
   const mergedAssets = {
     icon: initialAssets?.icon || null,
+    infoFiles: initialAssets?.infoFiles || [],
     tabs: {
       ...createEmptyTabAssets(config.game),
       ...(initialAssets?.tabs || {})
@@ -65,6 +67,16 @@ function createInitialState(initialConfig, initialAssets) {
     }
   }
 
+  if (mergedAssets.infoFiles.length === 0 && config.info_files) {
+    mergedAssets.infoFiles = Object.entries(normalizeInfoFiles(config.info_files)).map(([storedPath, state]) => ({
+      id: createAssetId(),
+      kind: 'missing',
+      storedPath,
+      label: storedPath,
+      state
+    }));
+  }
+
   return { config, assets: mergedAssets };
 }
 
@@ -82,10 +94,17 @@ function deriveCanonicalConfig(formState, assets) {
     if (Object.keys(entry).length > 0) files[configFileKey] = entry;
   }
 
+  const info_files = {};
+  for (const infoAsset of assets.infoFiles || []) {
+    const storedPath = normalizeStoredPath(infoAsset.storedPath || infoAsset.label || infoAsset.file?.name, { allowDirectory: false });
+    if (storedPath) info_files[storedPath] = infoAsset.state === 'hide' ? 'hide' : 'show';
+  }
+
   return normalizeModConfigData({
     ...formState,
     tags: sanitizeTags(formState.tags),
-    files
+    files,
+    info_files
   });
 }
 
@@ -113,6 +132,7 @@ export default function ModEditor({ isCreating, initialConfig, initialAssets }) 
   const dataInputRef = useRef(null);
   const extraFileInputRef = useRef(null);
   const extraFolderInputRef = useRef(null);
+  const infoFileInputRef = useRef(null);
   const pendingFileKeyRef = useRef('');
 
   const games = useMemo(() => getVisibleGames(), []);
@@ -337,6 +357,28 @@ export default function ModEditor({ isCreating, initialConfig, initialAssets }) 
     event.target.value = '';
   };
 
+  const handleInfoFilesSelected = (event) => {
+    const selectedFiles = Array.from(event.target.files || []);
+    if (selectedFiles.length === 0) return;
+
+    setAssets((prev) => ({
+      ...prev,
+      infoFiles: [
+        ...(prev.infoFiles || []),
+        ...selectedFiles.map((file) => ({
+          id: createAssetId(),
+          kind: 'file',
+          storedPath: file.name,
+          label: file.name,
+          state: 'show',
+          file
+        }))
+      ]
+    }));
+
+    event.target.value = '';
+  };
+
   const removeDataFile = (fileKey) => {
     setAssets((prev) => ({
       ...prev,
@@ -362,7 +404,24 @@ export default function ModEditor({ isCreating, initialConfig, initialAssets }) 
       }
     }));
   };
-    const validate = () => {
+
+  const removeInfoFile = (assetId) => {
+    setAssets((prev) => ({
+      ...prev,
+      infoFiles: (prev.infoFiles || []).filter((entry) => entry.id !== assetId)
+    }));
+  };
+
+  const updateInfoFileVisibility = (assetId, state) => {
+    setAssets((prev) => ({
+      ...prev,
+      infoFiles: (prev.infoFiles || []).map((entry) => (
+        entry.id === assetId ? { ...entry, state } : entry
+      ))
+    }));
+  };
+
+  const validate = () => {
     const nextErrors = {};
     const canonical = deriveCanonicalConfig(formState, assets);
 
@@ -424,6 +483,7 @@ export default function ModEditor({ isCreating, initialConfig, initialAssets }) 
       <input ref={dataInputRef} type="file" accept={DATA_FILE_EXTENSIONS.join(',')} hidden onChange={handleDataFileSelected} />
       <input ref={extraFileInputRef} type="file" multiple hidden onChange={handleExtraFilesSelected} />
       <input ref={extraFolderInputRef} type="file" hidden multiple onChange={handleExtraFolderSelected} webkitdirectory="" directory="" />
+      <input ref={infoFileInputRef} type="file" accept=".txt,.md,.markdown,.rst,.html,.htm,.json" hidden multiple onChange={handleInfoFilesSelected} />
 
       <section className="g3m-panel g3m-panel--editor">
         <div className="g3m-page-heading">
@@ -490,6 +550,7 @@ export default function ModEditor({ isCreating, initialConfig, initialAssets }) 
                   </div>
                 </div>
                 <small>{t('editor.iconHint', { defaultValue: 'Paste an image URL or select a local icon file.' })}</small>
+              </div>
 
               <label className="g3m-field g3m-field--full">
                 <span>{t('ui.homepage', { defaultValue: 'Homepage' })}</span>
@@ -514,7 +575,6 @@ export default function ModEditor({ isCreating, initialConfig, initialAssets }) 
                 </div>
               </div>
             </div>
-          </div>
           </section>
 
           <section className="g3m-editor__files">
@@ -585,6 +645,48 @@ export default function ModEditor({ isCreating, initialConfig, initialAssets }) 
                 </div>
               )}
             </div>
+
+            <section className="g3m-info-files">
+              <div className="g3m-editor__section-heading">
+                <h3>{t('ui.info_files', { defaultValue: 'Info files' })}</h3>
+                <p>{t('ui.info_files_hint', { defaultValue: 'Optional README, changelog, license, and other text files for G3M to show or keep bundled.' })}</p>
+              </div>
+
+              <div className="g3m-files-toolbar">
+                <button type="button" className="g3m-button" onClick={() => infoFileInputRef.current?.click()}>
+                  {t('ui.add_info_files', { defaultValue: 'Add info files' })}
+                </button>
+              </div>
+
+              <div className="g3m-file-list g3m-file-list--compact">
+                {(assets.infoFiles || []).length > 0 ? (
+                  assets.infoFiles.map((entry) => (
+                    <article key={entry.id} className="g3m-file-card g3m-file-card--info">
+                      <div>
+                        <p className="g3m-file-card__label">{t('files.info_file', { defaultValue: 'Info file' })}</p>
+                        <strong>{entry.label}</strong>
+                      </div>
+                      <div className="g3m-file-card__actions">
+                        <label className="g3m-field g3m-field--inline">
+                          <span>{t('ui.info_file_visibility', { defaultValue: 'Visibility' })}</span>
+                          <select value={entry.state === 'hide' ? 'hide' : 'show'} onChange={(event) => updateInfoFileVisibility(entry.id, event.target.value)}>
+                            <option value="show">{t('ui.show', { defaultValue: 'Show' })}</option>
+                            <option value="hide">{t('ui.hide', { defaultValue: 'Hide' })}</option>
+                          </select>
+                        </label>
+                        <button type="button" className="g3m-button g3m-button--danger" onClick={() => removeInfoFile(entry.id)}>
+                          {t('buttons.delete')}
+                        </button>
+                      </div>
+                    </article>
+                  ))
+                ) : (
+                  <div className="g3m-empty-block">
+                    {t('editor.noInfoFiles', { defaultValue: 'No info files selected.' })}
+                  </div>
+                )}
+              </div>
+            </section>
 
             {errors.files ? <div className="g3m-inline-error">{errors.files}</div> : null}
           </section>

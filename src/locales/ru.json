@@ -62,7 +62,14 @@
     "import_mod": "Импортировать мод",
     "homepage": "Домашняя страница",
     "mod_editor_fields_hint": "Заполняйте только те поля, которые помогают объяснить мод.",
-    "mod_editor_files_hint": "Каждая вкладка может содержать один DATA файл и любое количество дополнительных файлов или папок.<br>Архивы распаковываются в папку игры, что удобно для хранения множества файлов и путей в одной группе."
+    "mod_editor_files_hint": "Каждая вкладка может содержать один DATA файл и любое количество дополнительных файлов или папок.<br>Архивы распаковываются в папку игры, что удобно для хранения множества файлов и путей в одной группе.",
+    "frickbears3": "FRICKBEARS3",
+    "info_files": "INFO-файлы",
+    "info_files_hint": "Необязательные README, changelog, license и другие текстовые файлы, которые G3M может показать или оставить в архиве.",
+    "add_info_files": "Добавить INFO-файлы",
+    "info_file_visibility": "Видимость",
+    "show": "Показывать",
+    "hide": "Скрыть"
   },
   "home": {
     "description": "Веб-инструмент для создания, редактирования и упаковки модов в G3M формате. Поддерживает <a href=\"https://gamebanana.com/tools/20575\" target=\"_blank\" rel=\"noreferrer\">Deltamod</a>."
@@ -78,7 +85,8 @@
     "iconHint": "Вставьте URL изображения или выберите локальный файл иконки.",
     "addFolder": "Добавить папку",
     "noDataFile": "DATA файл еще не выбран для этой вкладки.",
-    "noExtraFiles": "Дополнительные файлы еще не выбраны для этой вкладки."
+    "noExtraFiles": "Дополнительные файлы еще не выбраны для этой вкладки.",
+    "noInfoFiles": "INFO-файлы не выбраны."
   },
   "files": {
     "icon_label": "Иконка",
@@ -92,7 +100,8 @@
     "extra_files": "Дополнительные файлы",
     "extra_files_title": "Дополнительные файлы: {{key_name}}",
     "version": "Версия",
-    "version_label": "Версия {{file_type}}:"
+    "version_label": "Версия {{file_type}}:",
+    "info_file": "INFO-файл"
   },
   "tabs": {
     "menu_root": "Меню/Корн. папка",
@@ -104,7 +113,8 @@
     "undertale": "Undertale",
     "undertaleyellow": "UNDERTALE Yellow",
     "pizzatower": "Pizza Tower",
-    "sugaryspire": "Sugary Spire"
+    "sugaryspire": "Sugary Spire",
+    "frickbears3": "FRICKBEARS3"
   },
   "tags": {
     "textedit_text": "Изм. Текста",

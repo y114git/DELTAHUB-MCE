@@ -62,7 +62,14 @@
     "import_mod": "导入模组",
     "homepage": "主页",
     "mod_editor_fields_hint": "只填写有助于解释模组的字段。",
-    "mod_editor_files_hint": "每个标签页可以容纳一个DATA文件和任意数量的额外文件或文件夹。<br>存档会解压到游戏文件夹中，这很方便将许多文件和路径保存在一个组中。"
+    "mod_editor_files_hint": "每个标签页可以容纳一个DATA文件和任意数量的额外文件或文件夹。<br>存档会解压到游戏文件夹中，这很方便将许多文件和路径保存在一个组中。",
+    "frickbears3": "FRICKBEARS3",
+    "info_files": "INFO文件",
+    "info_files_hint": "可选的 README、changelog、license 和其他文本文件，G3M 可以显示或保留在压缩包中。",
+    "add_info_files": "添加INFO文件",
+    "info_file_visibility": "可见性",
+    "show": "显示",
+    "hide": "隐藏"
   },
   "home": {
     "description": "用于创建、编辑和打包G3M格式模组的网页工具。支持<a href=\"https://gamebanana.com/tools/20575\" target=\"_blank\" rel=\"noreferrer\">Deltamod</a>。"
@@ -78,7 +85,8 @@
     "iconHint": "粘贴图像URL或选择本地图标文件。",
     "addFolder": "添加文件夹",
     "noDataFile": "此标签页尚未选择DATA文件。",
-    "noExtraFiles": "此标签页尚未选择额外文件。"
+    "noExtraFiles": "此标签页尚未选择额外文件。",
+    "noInfoFiles": "未选择INFO文件。"
   },
   "files": {
     "icon_label": "图标",
@@ -92,7 +100,8 @@
     "extra_files": "额外文件",
     "extra_files_title": "额外文件：{{key_name}}",
     "version": "版本",
-    "version_label": "版本{{file_type}}："
+    "version_label": "版本{{file_type}}：",
+    "info_file": "INFO文件"
   },
   "tabs": {
     "menu_root": "菜单/根目录",
@@ -104,7 +113,8 @@
     "undertale": "Undertale",
     "undertaleyellow": "UNDERTALE Yellow",
     "pizzatower": "Pizza Tower",
-    "sugaryspire": "Sugary Spire"
+    "sugaryspire": "Sugary Spire",
+    "frickbears3": "FRICKBEARS3"
   },
   "tags": {
     "textedit_text": "文本编辑",

@@ -1,13 +1,14 @@
 import { normalizeModConfigData, buildModConfigData } from '../data/modConfig';
 import { mapConfigFileKeyToTabFilesKey, getArchiveFolderName } from '../data/gameDefinitions';
 
-// Game mapping from main DELTAHUB
+// Game mapping from G3M's Deltamod importer.
 const DELTAMOD_GAME_MAP = {
   "toby.deltarune": "deltarune",
   "toby.deltarune.demo": "deltarunedemo", 
   "toby.undertale": "undertale",
   "fans.utyellow": "undertaleyellow",
   "other.pizzatower": "pizzatower",
+  "other.frickbears3": "frickbears3",
 };
 
 function readAttribute(element, attribute) {
@@ -44,7 +45,7 @@ function resolveGameVersion(game, deltamodInfo) {
 }
 
 function normalizeContentKey(chapterKey, targetGame) {
-  // Use same logic as main DELTAHUB's _normalize_content_key
+  // Use the same content-key rules as G3M's importer.
   if (chapterKey === 'demo') {
     return targetGame === 'deltarunedemo' ? 'deltarunedemo' : 'deltarune_0';
   }
@@ -144,7 +145,7 @@ export async function convertDeltamodArchive(zipEntries, gamebananaMetadata = {}
   try {
     xml = parser.parseFromString(xmlText, 'application/xml');
     if (xml.querySelector('parsererror')) {
-      // Try wrapping in patches root like main DELTAHUB does
+      // Try wrapping in a patches root like G3M does.
       xml = parser.parseFromString(
         `<?xml version="1.0" encoding="UTF-8"?><patches>${xmlText}</patches>`, 
         'application/xml'
@@ -159,9 +160,9 @@ export async function convertDeltamodArchive(zipEntries, gamebananaMetadata = {}
   const modId = generateModId(metadata, gamebananaMetadata);
   
   const files = {};
-  const assets = { tabs: {}, icon: null };
+  const assets = { tabs: {}, icon: null, infoFiles: [] };
 
-  // Process patches like main DELTAHUB
+  // Process patches using G3M-compatible content keys.
   for (const patchNode of findPatchNodes(xml)) {
     const patchTarget = readAttribute(patchNode, 'to');
     const patchSource = readAttribute(patchNode, 'patch');
@@ -227,7 +228,7 @@ export async function convertDeltamodArchive(zipEntries, gamebananaMetadata = {}
     }
   }
 
-  // Process icon like main DELTAHUB
+  // Process icon.
   const iconEntry = Object.values(zipEntries).find((entry) => 
     !entry.dir && /(^|\/)(_?icon\.png)$/i.test(entry.name)
   );
@@ -244,7 +245,7 @@ export async function convertDeltamodArchive(zipEntries, gamebananaMetadata = {}
     };
   }
 
-  // Build config using same structure as main DELTAHUB
+  // Build config using G3M's mod_config.json structure.
   const config = normalizeModConfigData({
     id: modId,
     version: metadata.version || '1.0.0',
@@ -259,7 +260,7 @@ export async function convertDeltamodArchive(zipEntries, gamebananaMetadata = {}
     files
   });
 
-  // Apply GameBanana metadata if available (like main DELTAHUB)
+  // Apply GameBanana metadata if available.
   if (gamebananaMetadata) {
     if (gamebananaMetadata.icon && !config.icon) {
       config.icon = gamebananaMetadata.icon;

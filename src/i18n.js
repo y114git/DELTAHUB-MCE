@@ -5,13 +5,17 @@ import ru from './locales/ru.json';
 import zh_cn from './locales/zh_cn.json';
 import zh_tw from './locales/zh_tw.json';
 import es from './locales/es.json';
+import ja from './locales/ja.json';
+import ko from './locales/ko.json';
 
 const resources = {
   en: { translation: en },
   ru: { translation: ru },
   zh_cn: { translation: zh_cn },
   zh_tw: { translation: zh_tw },
-  es: { translation: es }
+  es: { translation: es },
+  ja: { translation: ja },
+  ko: { translation: ko }
 };
 
 const savedLanguage = localStorage.getItem('language') || 'en';

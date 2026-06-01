@@ -1,6 +1,6 @@
-// Migration service for DH-MCE - mirrors main DELTAHUB migration logic
+// Migration service for G3M-MCE.
 
-// Legacy chapter ID mapping from main DELTAHUB
+// Legacy chapter ID mapping from older G3M configs.
 const LEGACY_CHAPTER_IDS = {
   "-1": "deltarune",
   "0": "deltarune_0", 
@@ -15,7 +15,7 @@ const LEGACY_CHAPTER_IDS = {
   "-50": "sugaryspire",
 };
 
-// Legacy field mappings from main DELTAHUB
+// Legacy field mappings from older G3M configs.
 const LEGACY_DESCRIPTION_KEY = "tagline";
 const LEGACY_ICON_KEY = "icon_url";
 const LEGACY_MOD_ID_KEYS = ["key", "mod_key"];

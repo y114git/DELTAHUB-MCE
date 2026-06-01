@@ -6,7 +6,9 @@ const languages = [
   { code: 'ru', name: 'Русский' },
   { code: 'zh_cn', name: '简体中文' },
   { code: 'zh_tw', name: '繁體中文' },
-  { code: 'es', name: 'Español' }
+  { code: 'es', name: 'Español' },
+  { code: 'ja', name: '日本語' },
+  { code: 'ko', name: '한국어' }
 ];
 
 export default function LanguageSelector() {

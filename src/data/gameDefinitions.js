@@ -40,6 +40,12 @@ export const GAME_DEFINITIONS = [
     labelKey: 'ui.sugaryspire',
     fallbackLabel: 'Sugary Spire',
     tabs: [{ id: 'sugaryspire', filesKey: 'undertale', labelKey: 'tabs.sugaryspire', fallbackLabel: 'Sugary Spire' }]
+  },
+  {
+    id: 'frickbears3',
+    labelKey: 'ui.frickbears3',
+    fallbackLabel: 'FRICKBEARS3',
+    tabs: [{ id: 'frickbears3', filesKey: 'frickbears3', labelKey: 'tabs.frickbears3', fallbackLabel: 'FRICKBEARS3' }]
   }
 ];
 
@@ -58,12 +64,13 @@ export function getGameTabs(gameId) {
 }
 
 // getArchiveFolderName(fileKey, gameId): Maps archive file keys to folder names
-// Rules: demo->demo, undertale->sugaryspire/undertale based on gameId, pizzatower->pizzatower, 
+// Rules: demo->demo, undertale->sugaryspire/undertale based on gameId, single-tab games by id,
 // 0->pizzatower/chapter_0 based on gameId, numeric->chapter_<n>, default->fileKey or 'chapter_0'
 export function getArchiveFolderName(fileKey, gameId = 'deltarune') {
   if (fileKey === 'demo') return 'demo';
   if (fileKey === 'undertale') return gameId === 'sugaryspire' ? 'sugaryspire' : 'undertale';
   if (fileKey === 'pizzatower') return 'pizzatower';
+  if (fileKey === 'frickbears3') return 'frickbears3';
   if (fileKey === '0') return gameId === 'pizzatower' ? 'pizzatower' : 'chapter_0';
   if (/^\d+$/.test(String(fileKey))) return `chapter_${fileKey}`;
   return String(fileKey || 'chapter_0');
@@ -72,7 +79,7 @@ export function getArchiveFolderName(fileKey, gameId = 'deltarune') {
 export function mapConfigFileKeyToTabFilesKey(configFileKey, gameId = 'deltarune') {
   const gameDef = getGameDefinition(gameId);
   
-  // Map using the same logic as main DELTAHUB's normalize_chapter_id
+  // Map using the same logic as G3M's normalize_chapter_id.
   // For deltarune, map deltarune_1 -> 1, deltarune_2 -> 2, etc.
   if (gameId === 'deltarune') {
     const match = configFileKey.match(/^deltarune_(\d+)$/);

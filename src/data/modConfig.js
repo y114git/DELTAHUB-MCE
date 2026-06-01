@@ -20,7 +20,8 @@ export const MOD_FIELD_LIMITS = {
   homepage: 1000,
   icon: 1000,
   gameVersion: 1000,
-  fileValue: 1000
+  fileValue: 1000,
+  infoFileValue: 1000
 };
 
 const METADATA_KEYS = ['id', 'name', 'version', 'author', 'description', 'homepage', 'icon', 'game', 'game_version', 'tags'];
@@ -93,6 +94,19 @@ export function parseExtraFilesRaw(extraFilesRaw) {
   return result;
 }
 
+export function normalizeInfoFiles(infoFilesRaw) {
+  const normalized = {};
+  if (!infoFilesRaw || typeof infoFilesRaw !== 'object') return normalized;
+
+  for (const [rawPath, rawVisibility] of Object.entries(infoFilesRaw)) {
+    const storedPath = normalizeStoredPath(rawPath, { allowDirectory: false }).slice(0, MOD_FIELD_LIMITS.infoFileValue);
+    if (!storedPath) continue;
+    normalized[storedPath] = rawVisibility === 'hide' ? 'hide' : 'show';
+  }
+
+  return normalized;
+}
+
 export function createEmptyModConfig(gameId = 'deltarune') {
   return {
     config_version: MOD_CONFIG_VERSION,
@@ -105,7 +119,8 @@ export function createEmptyModConfig(gameId = 'deltarune') {
     game: gameId,
     game_version: '1.04',
     tags: ['other'],
-    files: {}
+    files: {},
+    info_files: {}
   };
 }
 
@@ -166,7 +181,8 @@ export function normalizeModConfigData(configData) {
     game: normalizedGame,
     game_version: trimString(getMetadataValue(config, 'game_version'), MOD_FIELD_LIMITS.gameVersion),
     tags: sanitizeTags(getMetadataValue(config, 'tags')),
-    files: normalizeFiles(config.files || config.file_groups || {}, normalizedGame)
+    files: normalizeFiles(config.files || config.file_groups || {}, normalizedGame),
+    info_files: normalizeInfoFiles(config.info_files || config.infoFiles)
   };
 }
 
@@ -178,11 +194,15 @@ export function buildModConfigData(configData) {
       metadata[key] = normalized[key];
     }
   }
-  return {
+  const result = {
     config_version: MOD_CONFIG_VERSION,
     metadata,
     files: normalized.files
   };
+  if (Object.keys(normalized.info_files).length > 0) {
+    result.info_files = normalized.info_files;
+  }
+  return result;
 }
 
 export function listTabFileKeys(gameId) {

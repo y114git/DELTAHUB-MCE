@@ -4,14 +4,12 @@ Web-based mod creator and editor for G3M format mods. Create and edit mods witho
 
 ## Features
 
-- Create public mods (submit to server)
-- Create local mods (export as ZIP)
-- Edit public mods (with secret key)
-- Edit local mods (import ZIP)
-- Support for DELTARUNE, DELTARUNE DEMO, UNDERTALE, and UNDERTALE Yellow
-- Multi-language support (EN, RU, ZH_CN, ZH_TW, ES)
+- Create local mods and export them as G3M ZIP archives
+- Edit local mods by importing existing G3M ZIP archives
+- Support for DELTARUNE, DELTARUNE DEMO, UNDERTALE, UNDERTALE Yellow, Pizza Tower, Sugary Spire, and FRICKBEARS3
+- DATA files, extra files/folders, icons, homepage metadata, tags, and INFO files
+- Multi-language support (EN, RU, ZH_CN, ZH_TW, ES, JA, KO)
 - Import from G3M and Deltamod formats
-- Export to G3M format
-
+- Export to the current G3M `mod_config.json` format
 
 

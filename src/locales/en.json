@@ -62,7 +62,14 @@
     "import_mod": "Import Mod",
     "homepage": "Homepage",
     "mod_editor_fields_hint": "Only fill in the fields that help explain the mod.",
-    "mod_editor_files_hint": "Each tab can contain one DATA file and any number of extra files or folders.<br>Archives are unpacked into the game folder, which is handy for keeping many files and paths in one group."
+    "mod_editor_files_hint": "Each tab can contain one DATA file and any number of extra files or folders.<br>Archives are unpacked into the game folder, which is handy for keeping many files and paths in one group.",
+    "frickbears3": "FRICKBEARS3",
+    "info_files": "Info files",
+    "info_files_hint": "Optional README, changelog, license, and other text files for G3M to show or keep bundled.",
+    "add_info_files": "Add info files",
+    "info_file_visibility": "Visibility",
+    "show": "Show",
+    "hide": "Hide"
   },
   "home": {
     "description": "Web tool for creating, editing and packaging mods in G3M format. Supports <a href=\"https://gamebanana.com/tools/20575\" target=\"_blank\" rel=\"noreferrer\">Deltamod</a>."
@@ -78,7 +85,8 @@
     "iconHint": "Paste an image URL or select a local icon file.",
     "addFolder": "Add folder",
     "noDataFile": "No DATA file selected for this tab yet.",
-    "noExtraFiles": "No extra files selected for this tab."
+    "noExtraFiles": "No extra files selected for this tab.",
+    "noInfoFiles": "No info files selected."
   },
   "files": {
     "icon_label": "Icon",
@@ -92,7 +100,8 @@
     "extra_files": "Additional files",
     "extra_files_title": "Extra Files: {{key_name}}",
     "version": "Version",
-    "version_label": "Version {{file_type}}:"
+    "version_label": "Version {{file_type}}:",
+    "info_file": "Info file"
   },
   "tabs": {
     "menu_root": "Menu/Root",
@@ -104,7 +113,8 @@
     "undertale": "Undertale",
     "undertaleyellow": "UNDERTALE Yellow",
     "pizzatower": "Pizza Tower",
-    "sugaryspire": "Sugary Spire"
+    "sugaryspire": "Sugary Spire",
+    "frickbears3": "FRICKBEARS3"
   },
   "tags": {
     "textedit_text": "Text Edit",

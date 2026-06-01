@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 import { getArchiveFolderName, mapConfigFileKeyToTabFilesKey, mapTabFilesKeyToConfigFileKey } from '../data/gameDefinitions';
-import { buildModConfigData, normalizeModConfigData, normalizeStoredPath, parseExtraFilesRaw } from '../data/modConfig';
+import { buildModConfigData, normalizeInfoFiles, normalizeModConfigData, normalizeStoredPath, parseExtraFilesRaw } from '../data/modConfig';
 import { convertDeltamodArchive } from './modConverter';
 import { migrateModConfigLegacyFields } from './migrationService';
 
@@ -42,7 +42,7 @@ function joinArchivePath(folderName, storedPath) {
 }
 
 async function buildImportedAssetsFromConfig(config, zipEntries) {
-  const assets = { icon: null, tabs: {} };
+  const assets = { icon: null, tabs: {}, infoFiles: [] };
 
   if (config.icon && !/^https?:\/\//i.test(config.icon)) {
     const iconEntry = findEntryByName(zipEntries, [config.icon, `icon/${config.icon}`, 'icon.png']);
@@ -144,6 +144,23 @@ async function buildImportedAssetsFromConfig(config, zipEntries) {
     }
   }
 
+  for (const [infoPath, visibility] of Object.entries(normalizeInfoFiles(config.info_files))) {
+    const infoEntry = findEntryByName(zipEntries, [infoPath]);
+    if (!infoEntry) continue;
+
+    const infoBlob = await infoEntry.async('blob');
+    assets.infoFiles.push({
+      id: crypto.randomUUID?.() || `asset_${Math.random().toString(36).slice(2, 10)}`,
+      kind: 'file',
+      storedPath: infoPath,
+      label: infoPath,
+      state: visibility,
+      file: new File([infoBlob], infoPath.split('/').pop() || 'info.txt', {
+        type: infoBlob.type || 'text/plain'
+      })
+    });
+  }
+
   return assets;
 }
 
@@ -161,7 +178,7 @@ export async function importZipArchive(file) {
       const configText = await modConfigEntry.async('string');
       let config = JSON.parse(configText);
       
-      // Apply legacy migrations like main DELTAHUB
+      // Apply legacy migrations like G3M.
       migrateModConfigLegacyFields(config);
       
       // Normalize after migration
@@ -173,7 +190,7 @@ export async function importZipArchive(file) {
     }
   }
 
-  // If no G3M format, check for Deltamod format (like main DELTAHUB)
+  // If no G3M format, check for Deltamod format.
   const deltamodInfoEntry = Object.values(zipEntries).find(
     (entry) => !entry.dir && /(^|\/)(deltamodInfo\.json|_deltamodInfo\.json|meta\.json)$/i.test(entry.name)
   );
@@ -209,6 +226,14 @@ export async function exportModArchive({ config, assets }) {
     const iconName = assets.icon.storedPath || assets.icon.file.name || 'icon.png';
     zip.file(iconName, assets.icon.file);
     normalizedConfig.icon = iconName;
+  }
+
+  normalizedConfig.info_files = {};
+  for (const infoAsset of assets?.infoFiles || []) {
+    const storedPath = normalizeStoredPath(infoAsset.storedPath || infoAsset.label || infoAsset.file?.name, { allowDirectory: false });
+    if (!storedPath) continue;
+    normalizedConfig.info_files[storedPath] = infoAsset.state === 'hide' ? 'hide' : 'show';
+    if (infoAsset.file) zip.file(storedPath, infoAsset.file);
   }
 
   for (const [tabFilesKey, tabAssets] of Object.entries(assets?.tabs || {})) {

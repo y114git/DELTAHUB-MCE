@@ -62,7 +62,14 @@
     "import_mod": "Importar Mod",
     "homepage": "Página de inicio",
     "mod_editor_fields_hint": "Completa solo los campos que ayuden a explicar el mod.",
-    "mod_editor_files_hint": "Cada pestaña puede contener un archivo DATA y cualquier número de archivos o carpetas adicionales.<br>Los archivos se descomprimen en la carpeta del juego, lo cual es útil para mantener muchos archivos y rutas en un solo grupo."
+    "mod_editor_files_hint": "Cada pestaña puede contener un archivo DATA y cualquier número de archivos o carpetas adicionales.<br>Los archivos se descomprimen en la carpeta del juego, lo cual es útil para mantener muchos archivos y rutas en un solo grupo.",
+    "frickbears3": "FRICKBEARS3",
+    "info_files": "Archivos INFO",
+    "info_files_hint": "README, changelog, licencia y otros archivos de texto opcionales para que G3M los muestre o los conserve en el archivo.",
+    "add_info_files": "Agregar archivos INFO",
+    "info_file_visibility": "Visibilidad",
+    "show": "Mostrar",
+    "hide": "Ocultar"
   },
   "home": {
     "description": "Herramienta web para crear, editar y empaquetar mods en formato G3M. Soporta <a href=\"https://gamebanana.com/tools/20575\" target=\"_blank\" rel=\"noreferrer\">Deltamod</a>."
@@ -78,7 +85,8 @@
     "iconHint": "Pega una URL de imagen o selecciona un archivo de icono local.",
     "addFolder": "Agregar carpeta",
     "noDataFile": "No se ha seleccionado ningún archivo DATA para esta pestaña aún.",
-    "noExtraFiles": "No se han seleccionado archivos adicionales para esta pestaña."
+    "noExtraFiles": "No se han seleccionado archivos adicionales para esta pestaña.",
+    "noInfoFiles": "No se seleccionaron archivos INFO."
   },
   "files": {
     "icon_label": "Icono",
@@ -92,7 +100,8 @@
     "extra_files": "Archivos adicionales",
     "extra_files_title": "Archivos adicionales: {{key_name}}",
     "version": "Versión",
-    "version_label": "Versión {{file_type}}:"
+    "version_label": "Versión {{file_type}}:",
+    "info_file": "Archivo INFO"
   },
   "tabs": {
     "menu_root": "Menú/Raíz",
@@ -104,7 +113,8 @@
     "undertale": "Undertale",
     "undertaleyellow": "UNDERTALE Yellow",
     "pizzatower": "Pizza Tower",
-    "sugaryspire": "Sugary Spire"
+    "sugaryspire": "Sugary Spire",
+    "frickbears3": "FRICKBEARS3"
   },
   "tags": {
     "textedit_text": "Edición de texto",

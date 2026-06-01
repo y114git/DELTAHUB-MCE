@@ -68,6 +68,11 @@
   grid-column: 1 / -1;
 }
 
+.g3m-field--inline {
+  align-items: center;
+  grid-template-columns: auto minmax(140px, 1fr);
+}
+
 .g3m-field span {
   font-size: 0.95rem;
   font-weight: 700;
@@ -235,6 +240,11 @@
   background: rgba(109, 233, 133, 0.6);
 }
 
+.g3m-file-list--compact {
+  min-height: 0;
+  max-height: 260px;
+}
+
 .g3m-file-card,
 .g3m-empty-block {
   border: 2px solid var(--g3m-border);
@@ -248,6 +258,17 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+}
+
+.g3m-file-card--info {
+  align-items: center;
+}
+
+.g3m-file-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .g3m-file-card__label {
@@ -305,6 +326,13 @@
   border: 2px solid var(--g3m-border);
 }
 
+.g3m-info-files {
+  border-top: 2px solid var(--g3m-border);
+  display: grid;
+  gap: 12px;
+  padding-top: 18px;
+}
+
 .g3m-editor__footer-actions {
   display: flex;
   justify-content: flex-end;
@@ -355,5 +383,14 @@
   .g3m-file-card {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .g3m-file-card__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .g3m-field--inline {
+    grid-template-columns: 1fr;
   }
 }
