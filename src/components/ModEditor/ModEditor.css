@@ -350,6 +350,7 @@
 
 .g3m-icon-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
@@ -403,5 +404,9 @@
 
   .g3m-icon-container {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .g3m-icon-buttons {
+    flex-direction: column;
   }
 }
