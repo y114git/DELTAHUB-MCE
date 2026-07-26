@@ -1,7 +1,7 @@
 .g3m-home {
   width: min(1180px, calc(100vw - 48px));
   margin: 0 auto;
-  padding: 36px 0 48px;
+  padding: 0 0 48px;
   text-align: center;
 }
 
@@ -105,7 +105,6 @@
 @media (max-width: 760px) {
   .g3m-home {
     width: min(100vw - 24px, 1180px);
-    padding-top: 76px;
   }
 
   .g3m-home__logo {
@@ -114,5 +113,7 @@
 
   .g3m-home__hero {
     min-height: auto;
+    padding: 28px 18px;
+    gap: 32px;
   }
 }

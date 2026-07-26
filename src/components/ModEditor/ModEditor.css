@@ -1,7 +1,7 @@
 .g3m-page-shell {
   width: min(1280px, calc(100vw - 40px));
   margin: 0 auto;
-  padding: 92px 0 40px;
+  padding: 0 0 40px;
 }
 
 .g3m-panel {
@@ -14,11 +14,13 @@
 
 .g3m-panel--editor {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 28px;
 }
 
 .g3m-page-heading {
   display: grid;
+  min-width: 0;
   gap: 0;
 }
 
@@ -31,6 +33,7 @@
 .g3m-editor {
   display: grid;
   grid-template-columns: 1fr;
+  min-width: 0;
   gap: 18px;
 }
 
@@ -41,6 +44,8 @@
   background: rgba(40, 40, 40, 0.85);
   padding: 20px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: 18px;
 }
 
@@ -56,11 +61,13 @@
 .g3m-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
   gap: 14px;
 }
 
 .g3m-field {
   display: grid;
+  min-width: 0;
   gap: 8px;
 }
 
@@ -92,6 +99,7 @@
 .g3m-icon-input-wrapper {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   gap: 8px;
 }
 
@@ -373,7 +381,6 @@
 @media (max-width: 640px) {
   .g3m-page-shell {
     width: min(100vw - 20px, 1280px);
-    padding-top: 76px;
   }
 
   .g3m-form-grid {
@@ -392,5 +399,9 @@
 
   .g3m-field--inline {
     grid-template-columns: 1fr;
+  }
+
+  .g3m-icon-container {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

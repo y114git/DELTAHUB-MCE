@@ -14,8 +14,12 @@ function CurrentPage() {
 function App() {
   return (
     <NavigationProvider>
-      <LanguageSelector />
-      <CurrentPage />
+      <div className="g3m-app">
+        <header className="g3m-app__toolbar">
+          <LanguageSelector />
+        </header>
+        <CurrentPage />
+      </div>
     </NavigationProvider>
   );
 }
