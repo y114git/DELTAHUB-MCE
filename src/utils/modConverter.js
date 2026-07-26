@@ -1,10 +1,12 @@
 import { normalizeModConfigData, buildModConfigData } from '../data/modConfig';
-import { mapConfigFileKeyToTabFilesKey, getArchiveFolderName } from '../data/gameDefinitions';
+import { getGameDefinition, mapConfigFileKeyToTabFilesKey, getArchiveFolderName } from '../data/gameDefinitions';
+import { parse as parseToml } from 'smol-toml';
 
 // Game mapping from G3M's Deltamod importer.
 const DELTAMOD_GAME_MAP = {
   "toby.deltarune": "deltarune",
   "toby.deltarune.demo": "deltarunedemo", 
+  "toby.deltarune.demolts": "deltarunedemo",
   "toby.undertale": "undertale",
   "fans.utyellow": "undertaleyellow",
   "other.pizzatower": "pizzatower",
@@ -44,17 +46,25 @@ function resolveGameVersion(game, deltamodInfo) {
   return deltamodInfo.deltaruneTargetVersion || '';
 }
 
-function normalizeContentKey(chapterKey, targetGame) {
-  // Use the same content-key rules as G3M's importer.
-  if (chapterKey === 'demo') {
-    return targetGame === 'deltarunedemo' ? 'deltarunedemo' : 'deltarune_0';
+async function readDeltamodInfo(infoEntry) {
+  const text = await infoEntry.async('string');
+  try {
+    return /\.toml$/i.test(infoEntry.name) ? parseToml(text) : JSON.parse(text);
+  } catch (error) {
+    throw new Error(`Failed to parse ${infoEntry.name.split('/').pop()}: ${error.message}`);
   }
-  
-  // For deltarune, map numeric chapters to deltarune_N format
-  if (targetGame === 'deltarune' && /^\d+$/.test(chapterKey)) {
+}
+
+function normalizeContentKey(chapterKey, targetGame) {
+  if (targetGame !== 'deltarune') {
+    return getGameDefinition(targetGame).tabs[0].id;
+  }
+  if (chapterKey === 'demo') {
+    return 'deltarune_0';
+  }
+  if (/^\d+$/.test(chapterKey)) {
     return `deltarune_${chapterKey}`;
   }
-  
   return chapterKey;
 }
 
@@ -94,15 +104,6 @@ function buildStoredPath(relativePath, filename) {
   return relativePath ? `${relativePath}${filename}` : filename;
 }
 
-function buildChapterStoredPath(tabFilesKey, targetGame, relativePath, filename) {
-  const basePath = buildStoredPath(relativePath, filename);
-  if (!basePath) return '';
-  if (targetGame === 'deltarune' && /^\d+$/.test(String(tabFilesKey)) && String(tabFilesKey) !== '0') {
-    return `${getArchiveFolderName(tabFilesKey, targetGame)}/${basePath}`;
-  }
-  return basePath;
-}
-
 function generateModId(metadata, gamebananaMetadata = {}) {
   if (gamebananaMetadata.mod_id) {
     return `gb_${gamebananaMetadata.mod_id}`;
@@ -120,23 +121,18 @@ function generateModId(metadata, gamebananaMetadata = {}) {
 
 export async function convertDeltamodArchive(zipEntries, gamebananaMetadata = {}) {
   const infoEntry = Object.values(zipEntries).find((entry) => 
-    !entry.dir && /(^|\/)(deltamodInfo\.json|_deltamodInfo\.json|meta\.json)$/i.test(entry.name)
+    !entry.dir && /(^|\/)(deltamodInfo\.json|_deltamodInfo\.json|meta\.(json|toml))$/i.test(entry.name)
   );
   const xmlEntry = Object.values(zipEntries).find((entry) => 
     !entry.dir && /(^|\/)modding\.xml$/i.test(entry.name)
   );
 
   if (!infoEntry || !xmlEntry) {
-    throw new Error('Invalid deltamod archive - missing deltamodInfo.json or modding.xml');
+    throw new Error('Invalid Deltamod archive: metadata or modding.xml is missing');
   }
 
-  let deltamodInfo, metadata;
-  try {
-    deltamodInfo = JSON.parse(await infoEntry.async('string'));
-    metadata = deltamodInfo.metadata || {};
-  } catch (error) {
-    throw new Error(`Failed to parse deltamodInfo.json: ${error.message}`);
-  }
+  const deltamodInfo = await readDeltamodInfo(infoEntry);
+  const metadata = deltamodInfo.metadata || {};
 
   const xmlText = await xmlEntry.async('string');
   const parser = new DOMParser();
@@ -144,7 +140,7 @@ export async function convertDeltamodArchive(zipEntries, gamebananaMetadata = {}
 
   try {
     xml = parser.parseFromString(xmlText, 'application/xml');
-    if (xml.querySelector('parsererror')) {
+    if (xml.querySelector?.('parsererror')) {
       // Try wrapping in a patches root like G3M does.
       xml = parser.parseFromString(
         `<?xml version="1.0" encoding="UTF-8"?><patches>${xmlText}</patches>`, 
@@ -166,7 +162,7 @@ export async function convertDeltamodArchive(zipEntries, gamebananaMetadata = {}
   for (const patchNode of findPatchNodes(xml)) {
     const patchTarget = readAttribute(patchNode, 'to');
     const patchSource = readAttribute(patchNode, 'patch');
-    const patchType = readAttribute(patchNode, 'type');
+    const patchType = readAttribute(patchNode, 'type').trim().toLowerCase();
 
     if (!patchTarget || !patchSource || !patchType) {
       console.warn('Skipping patch with missing fields', { patchTarget, patchSource, patchType });
@@ -199,8 +195,8 @@ export async function convertDeltamodArchive(zipEntries, gamebananaMetadata = {}
     const cleanFilename = sourcePath.split('/').pop() || filename || 'asset.bin';
     const file = new File([blob], cleanFilename, { type: blob.type || 'application/octet-stream' });
 
-    if (patchType === 'xdelta') {
-      const storedPath = buildChapterStoredPath(tabFilesKey, targetGame, '', cleanFilename);
+    if (patchType === 'xdelta' || patchType === 'g3mpatch') {
+      const storedPath = cleanFilename;
       files[contentKey].data_file_path = storedPath;
       assets.tabs[tabFilesKey].dataFile = {
         id: crypto.randomUUID?.() || `asset_${Math.random().toString(36).slice(2, 10)}`,
@@ -210,8 +206,8 @@ export async function convertDeltamodArchive(zipEntries, gamebananaMetadata = {}
         file,
         archiveFolder: getArchiveFolderName(tabFilesKey, targetGame)
       };
-    } else if (patchType === 'override') {
-      const storedPath = buildChapterStoredPath(tabFilesKey, targetGame, relativePath, filename);
+    } else if (patchType === 'override' || patchType === 'copy') {
+      const storedPath = buildStoredPath(relativePath, filename);
       if (!files[contentKey].extra_files) files[contentKey].extra_files = [];
       files[contentKey].extra_files.push(storedPath);
 

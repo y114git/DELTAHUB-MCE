@@ -8,6 +8,7 @@ const LEGACY_CHAPTER_IDS = {
   "2": "deltarune_2",
   "3": "deltarune_3",
   "4": "deltarune_4",
+  "5": "deltarune_5",
   "-10": "deltarunedemo",
   "-20": "undertale",
   "-30": "undertaleyellow", 
@@ -19,7 +20,7 @@ const LEGACY_CHAPTER_IDS = {
 const LEGACY_DESCRIPTION_KEY = "tagline";
 const LEGACY_ICON_KEY = "icon_url";
 const LEGACY_MOD_ID_KEYS = ["key", "mod_key"];
-const LEGACY_HOMEPAGE_KEYS = ["homepage", "external_url", "external_link", "site", "url"];
+const LEGACY_HOMEPAGE_KEYS = ["external_url", "external_link", "site", "url"];
 
 export function migrateLegacyChapterId(chapterId) {
   return LEGACY_CHAPTER_IDS[String(chapterId)] || String(chapterId);
@@ -31,6 +32,10 @@ export function migrateModConfigLegacyFields(configData) {
   }
   
   let changed = false;
+
+  if (configData.metadata && typeof configData.metadata === 'object') {
+    changed = migrateModConfigLegacyFields(configData.metadata) || changed;
+  }
 
   // Migrate description field
   const descriptionValue = configData.description;

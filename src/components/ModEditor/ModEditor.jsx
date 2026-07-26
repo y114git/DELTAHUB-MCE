@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '../../navigation';
 import { getGameDefinition, getVisibleGames, mapTabFilesKeyToConfigFileKey } from '../../data/gameDefinitions';
 import {
   MOD_ALLOWED_TAGS,
@@ -20,7 +20,8 @@ const TAG_OPTIONS = [
   { value: 'textedit', labelKey: 'tags.textedit_text', fallback: 'Text Edit' },
   { value: 'customization', labelKey: 'tags.customization', fallback: 'Customization' },
   { value: 'gameplay', labelKey: 'tags.gameplay', fallback: 'Gameplay' },
-  { value: 'other', labelKey: 'tags.other', fallback: 'Other' }
+  { value: 'other', labelKey: 'tags.other', fallback: 'Other' },
+  { value: 'CYOP/AFOM', labelKey: 'tags.cyop_afom', fallback: 'CYOP/AFOM' }
 ];
 
 function createAssetId() {
@@ -97,7 +98,11 @@ function deriveCanonicalConfig(formState, assets) {
   const info_files = {};
   for (const infoAsset of assets.infoFiles || []) {
     const storedPath = normalizeStoredPath(infoAsset.storedPath || infoAsset.label || infoAsset.file?.name, { allowDirectory: false });
-    if (storedPath) info_files[storedPath] = infoAsset.state === 'hide' ? 'hide' : 'show';
+    if (storedPath) {
+      info_files[storedPath] = ['hide', 'remove'].includes(infoAsset.state)
+        ? infoAsset.state
+        : 'show';
+    }
   }
 
   return normalizeModConfigData({
@@ -669,9 +674,10 @@ export default function ModEditor({ isCreating, initialConfig, initialAssets }) 
                       <div className="g3m-file-card__actions">
                         <label className="g3m-field g3m-field--inline">
                           <span>{t('ui.info_file_visibility', { defaultValue: 'Visibility' })}</span>
-                          <select value={entry.state === 'hide' ? 'hide' : 'show'} onChange={(event) => updateInfoFileVisibility(entry.id, event.target.value)}>
+                          <select value={entry.state || 'show'} onChange={(event) => updateInfoFileVisibility(entry.id, event.target.value)}>
                             <option value="show">{t('ui.show', { defaultValue: 'Show' })}</option>
                             <option value="hide">{t('ui.hide', { defaultValue: 'Hide' })}</option>
+                            <option value="remove">{t('ui.remove', { defaultValue: 'Remove' })}</option>
                           </select>
                         </label>
                         <button type="button" className="g3m-button g3m-button--danger" onClick={() => removeInfoFile(entry.id)}>

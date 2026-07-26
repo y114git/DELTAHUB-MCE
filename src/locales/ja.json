@@ -69,7 +69,8 @@
     "add_info_files": "INFOファイルを追加",
     "info_file_visibility": "表示",
     "show": "表示",
-    "hide": "非表示"
+    "hide": "非表示",
+    "remove": "削除"
   },
   "home": {
     "description": "<a href=\"https://gamebanana.com/tools/20575\" target=\"_blank\" rel=\"noreferrer\">Deltamod</a>にも対応した、G3M形式のMODを作成、編集、パッケージ化するWebツールです。"
@@ -109,6 +110,7 @@
     "chapter_2": "チャプター 2",
     "chapter_3": "チャプター 3",
     "chapter_4": "チャプター 4",
+    "chapter_5": "チャプター 5",
     "demo": "デモ",
     "undertale": "アンダーテール",
     "undertaleyellow": "UNDERTALE Yellow",

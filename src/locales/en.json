@@ -69,7 +69,8 @@
     "add_info_files": "Add info files",
     "info_file_visibility": "Visibility",
     "show": "Show",
-    "hide": "Hide"
+    "hide": "Hide",
+    "remove": "Remove"
   },
   "home": {
     "description": "Web tool for creating, editing and packaging mods in G3M format. Supports <a href=\"https://gamebanana.com/tools/20575\" target=\"_blank\" rel=\"noreferrer\">Deltamod</a>."
@@ -109,6 +110,7 @@
     "chapter_2": "Chapter 2",
     "chapter_3": "Chapter 3",
     "chapter_4": "Chapter 4",
+    "chapter_5": "Chapter 5",
     "demo": "Demo",
     "undertale": "Undertale",
     "undertaleyellow": "UNDERTALE Yellow",

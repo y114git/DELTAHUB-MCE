@@ -1,7 +1,12 @@
-import { GAME_IDS, getGameDefinition, getGameTabs } from './gameDefinitions';
+import {
+  GAME_IDS,
+  getGameDefinition,
+  getGameTabs,
+  mapTabFilesKeyToConfigFileKey
+} from './gameDefinitions';
 
 export const MOD_CONFIG_VERSION = '1.0.0';
-export const MOD_ALLOWED_TAGS = ['textedit', 'customization', 'gameplay', 'other', 'cyop', 'afom'];
+export const MOD_ALLOWED_TAGS = ['textedit', 'customization', 'gameplay', 'other', 'CYOP/AFOM'];
 export const DATA_FILE_EXTENSIONS = [
   ".xdelta",
   ".vcdiff", 
@@ -10,16 +15,18 @@ export const DATA_FILE_EXTENSIONS = [
   ".ios",
   ".droid",
   ".g3mpatch",
+  ".csx",
 ];
 export const MOD_FIELD_LIMITS = {
   id: 50,
   name: 50,
+  author: 50,
   version: 20,
   game: 30,
   description: 200,
-  homepage: 1000,
-  icon: 1000,
-  gameVersion: 1000,
+  homepage: 200,
+  icon: 200,
+  gameVersion: 20,
   fileValue: 1000,
   infoFileValue: 1000
 };
@@ -56,12 +63,12 @@ export function sanitizeTags(tagsRaw) {
   const source = Array.isArray(tagsRaw) ? tagsRaw : tagsRaw ? [tagsRaw] : [];
   const tags = [];
   for (const entry of source) {
-    const normalized = trimString(entry, 100).toLowerCase();
-    if (MOD_ALLOWED_TAGS.includes(normalized) && !tags.includes(normalized)) {
+    const rawTag = trimString(entry, 100);
+    const normalized = MOD_ALLOWED_TAGS.find((tag) => tag.toLowerCase() === rawTag.toLowerCase());
+    if (normalized && !tags.includes(normalized)) {
       tags.push(normalized);
     }
   }
-  if (tags.length === 0) tags.push('other');
   return tags;
 }
 
@@ -101,7 +108,8 @@ export function normalizeInfoFiles(infoFilesRaw) {
   for (const [rawPath, rawVisibility] of Object.entries(infoFilesRaw)) {
     const storedPath = normalizeStoredPath(rawPath, { allowDirectory: false }).slice(0, MOD_FIELD_LIMITS.infoFileValue);
     if (!storedPath) continue;
-    normalized[storedPath] = rawVisibility === 'hide' ? 'hide' : 'show';
+    const visibility = String(rawVisibility || '').toLowerCase();
+    normalized[storedPath] = ['show', 'hide', 'remove'].includes(visibility) ? visibility : 'show';
   }
 
   return normalized;
@@ -156,7 +164,8 @@ function normalizeFiles(filesData, gameId) {
 
   const ordered = {};
   for (const tab of getGameTabs(gameId)) {
-    if (normalized[tab.filesKey]) ordered[tab.filesKey] = normalized[tab.filesKey];
+    const configKey = mapTabFilesKeyToConfigFileKey(tab.filesKey, gameId);
+    if (normalized[configKey]) ordered[configKey] = normalized[configKey];
   }
   for (const [key, value] of Object.entries(normalized)) {
     if (!ordered[key]) ordered[key] = value;
@@ -174,10 +183,16 @@ export function normalizeModConfigData(configData) {
     id: trimString(getMetadataValue(config, 'id'), MOD_FIELD_LIMITS.id),
     name: trimString(getMetadataValue(config, 'name'), MOD_FIELD_LIMITS.name),
     version: trimString(getMetadataValue(config, 'version'), MOD_FIELD_LIMITS.version) || '1.0.0',
-    author: trimString(getMetadataValue(config, 'author'), MOD_FIELD_LIMITS.fileValue),
+    author: trimString(getMetadataValue(config, 'author'), MOD_FIELD_LIMITS.author),
     description: trimString(getMetadataValue(config, 'description') || getMetadataValue(config, 'tagline'), MOD_FIELD_LIMITS.description),
-    homepage: normalizeHomepage(getMetadataValue(config, 'homepage') || getMetadataValue(config, 'external_url')),
-    icon: trimString(getMetadataValue(config, 'icon'), MOD_FIELD_LIMITS.icon),
+    homepage: normalizeHomepage(
+      getMetadataValue(config, 'homepage')
+      || getMetadataValue(config, 'external_url')
+      || getMetadataValue(config, 'external_link')
+      || getMetadataValue(config, 'site')
+      || getMetadataValue(config, 'url')
+    ),
+    icon: trimString(getMetadataValue(config, 'icon') || getMetadataValue(config, 'icon_url'), MOD_FIELD_LIMITS.icon),
     game: normalizedGame,
     game_version: trimString(getMetadataValue(config, 'game_version'), MOD_FIELD_LIMITS.gameVersion),
     tags: sanitizeTags(getMetadataValue(config, 'tags')),

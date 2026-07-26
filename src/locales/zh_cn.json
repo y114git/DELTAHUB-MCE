@@ -69,7 +69,8 @@
     "add_info_files": "添加INFO文件",
     "info_file_visibility": "可见性",
     "show": "显示",
-    "hide": "隐藏"
+    "hide": "隐藏",
+    "remove": "移除"
   },
   "home": {
     "description": "用于创建、编辑和打包G3M格式模组的网页工具。支持<a href=\"https://gamebanana.com/tools/20575\" target=\"_blank\" rel=\"noreferrer\">Deltamod</a>。"
@@ -109,6 +110,7 @@
     "chapter_2": "第2章",
     "chapter_3": "第3章",
     "chapter_4": "第4章",
+    "chapter_5": "第5章",
     "demo": "演示",
     "undertale": "Undertale",
     "undertaleyellow": "UNDERTALE Yellow",

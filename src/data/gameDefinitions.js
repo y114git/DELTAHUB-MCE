@@ -8,7 +8,8 @@ export const GAME_DEFINITIONS = [
       { id: 'deltarune_1', filesKey: '1', labelKey: 'tabs.chapter_1', fallbackLabel: 'Chapter 1' },
       { id: 'deltarune_2', filesKey: '2', labelKey: 'tabs.chapter_2', fallbackLabel: 'Chapter 2' },
       { id: 'deltarune_3', filesKey: '3', labelKey: 'tabs.chapter_3', fallbackLabel: 'Chapter 3' },
-      { id: 'deltarune_4', filesKey: '4', labelKey: 'tabs.chapter_4', fallbackLabel: 'Chapter 4' }
+      { id: 'deltarune_4', filesKey: '4', labelKey: 'tabs.chapter_4', fallbackLabel: 'Chapter 4' },
+      { id: 'deltarune_5', filesKey: '5', labelKey: 'tabs.chapter_5', fallbackLabel: 'Chapter 5' }
     ]
   },
   {

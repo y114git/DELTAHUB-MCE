@@ -1,20 +1,22 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
+import { NavigationProvider, useCurrentPath } from './navigation';
 import Home from './pages/Home';
 import CreateMod from './pages/CreateMod';
 import EditMod from './pages/EditMod';
 
+function CurrentPage() {
+  const path = useCurrentPath();
+  if (path === '/create') return <CreateMod />;
+  if (path === '/edit') return <EditMod />;
+  return <Home />;
+}
+
 function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <NavigationProvider>
       <LanguageSelector />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/create" element={<CreateMod />} />
-        <Route path="/edit" element={<EditMod />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+      <CurrentPage />
+    </NavigationProvider>
   );
 }
 

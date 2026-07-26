@@ -146,18 +146,18 @@ async function buildImportedAssetsFromConfig(config, zipEntries) {
 
   for (const [infoPath, visibility] of Object.entries(normalizeInfoFiles(config.info_files))) {
     const infoEntry = findEntryByName(zipEntries, [infoPath]);
-    if (!infoEntry) continue;
+    if (!infoEntry && visibility !== 'remove') continue;
 
-    const infoBlob = await infoEntry.async('blob');
+    const infoBlob = infoEntry ? await infoEntry.async('blob') : null;
     assets.infoFiles.push({
       id: crypto.randomUUID?.() || `asset_${Math.random().toString(36).slice(2, 10)}`,
       kind: 'file',
       storedPath: infoPath,
       label: infoPath,
       state: visibility,
-      file: new File([infoBlob], infoPath.split('/').pop() || 'info.txt', {
+      file: infoBlob ? new File([infoBlob], infoPath.split('/').pop() || 'info.txt', {
         type: infoBlob.type || 'text/plain'
-      })
+      }) : null
     });
   }
 
@@ -192,7 +192,7 @@ export async function importZipArchive(file) {
 
   // If no G3M format, check for Deltamod format.
   const deltamodInfoEntry = Object.values(zipEntries).find(
-    (entry) => !entry.dir && /(^|\/)(deltamodInfo\.json|_deltamodInfo\.json|meta\.json)$/i.test(entry.name)
+    (entry) => !entry.dir && /(^|\/)(deltamodInfo\.json|_deltamodInfo\.json|meta\.(json|toml))$/i.test(entry.name)
   );
   const moddingXmlEntry = Object.values(zipEntries).find(
     (entry) => !entry.dir && /(^|\/)modding\.xml$/i.test(entry.name)
@@ -232,7 +232,9 @@ export async function exportModArchive({ config, assets }) {
   for (const infoAsset of assets?.infoFiles || []) {
     const storedPath = normalizeStoredPath(infoAsset.storedPath || infoAsset.label || infoAsset.file?.name, { allowDirectory: false });
     if (!storedPath) continue;
-    normalizedConfig.info_files[storedPath] = infoAsset.state === 'hide' ? 'hide' : 'show';
+    normalizedConfig.info_files[storedPath] = ['hide', 'remove'].includes(infoAsset.state)
+      ? infoAsset.state
+      : 'show';
     if (infoAsset.file) zip.file(storedPath, infoAsset.file);
   }
 

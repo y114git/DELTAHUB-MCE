@@ -69,7 +69,8 @@
     "add_info_files": "INFO 파일 추가",
     "info_file_visibility": "표시 여부",
     "show": "표시",
-    "hide": "숨김"
+    "hide": "숨김",
+    "remove": "제거"
   },
   "home": {
     "description": "<a href=\"https://gamebanana.com/tools/20575\" target=\"_blank\" rel=\"noreferrer\">Deltamod</a>도 지원하는 G3M 형식 모드 생성, 수정, 패키징 웹 도구입니다."
@@ -109,6 +110,7 @@
     "chapter_2": "챕터 2",
     "chapter_3": "챕터 3",
     "chapter_4": "챕터 4",
+    "chapter_5": "챕터 5",
     "demo": "데모",
     "undertale": "Undertale",
     "undertaleyellow": "UNDERTALE Yellow",

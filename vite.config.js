@@ -10,8 +10,5 @@ export default defineConfig({
     },
     optimizeDeps: {
         rolldownOptions: {}
-    },
-    define: {
-        'import.meta.env.VITE_CLOUD_FUNCTIONS_BASE_URL': JSON.stringify(process.env.CLOUD_FUNCTIONS_BASE_URL || '')
     }
 })
